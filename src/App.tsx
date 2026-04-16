@@ -7,9 +7,12 @@ import Herbal from './pages/Herbal';
 import Shop from './pages/Shop';
 import Consultation from './pages/Consultation';
 import AIAssistant from './pages/AIAssistant';
-import Symptoms from './pages/Symptoms';
+import DiseaseDB from './pages/DiseaseDB';
+import Ebooks from './pages/Ebooks';
+import GlobalCare from './pages/GlobalCare';
 import Account from './pages/Account';
 import Login from './pages/Login';
+import Checkout from './pages/Checkout';
 
 export default function App() {
   return (
@@ -18,12 +21,13 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cardiology" element={<Cardiology />} />
-          <Route path="/systems" element={<BodySystems />} />
-          <Route path="/symptoms" element={<Symptoms />} />
-          <Route path="/herbal" element={<Herbal />} />
-          <Route path="/shop" element={<Shop />} />
+          <Route path="/diseases" element={<DiseaseDB />} />
+          <Route path="/ebooks" element={<Ebooks />} />
+          <Route path="/global-care" element={<GlobalCare />} />
           <Route path="/consultation" element={<Consultation />} />
           <Route path="/ai-assistant" element={<AIAssistant />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/account" element={<Account />} />
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<Navigate to="/" replace />} />

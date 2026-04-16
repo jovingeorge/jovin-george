@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Heart, Shield, Activity, ShoppingBag, User, MessageCircle } from 'lucide-react';
+import { Menu, X, Heart, Shield, Activity, ShoppingBag, User, MessageCircle, BookOpen, Globe } from 'lucide-react';
 import { auth } from '../lib/firebase';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { motion, AnimatePresence } from 'motion/react';
+import Logo from './Logo';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,18 +18,19 @@ export default function Header() {
 
   const navItems = [
     { name: 'Cardiology', path: '/cardiology', icon: Heart },
-    { name: 'Body Systems', path: '/systems', icon: Activity },
-    { name: 'Symptom Checker', path: '/symptoms', icon: Shield },
+    { name: 'Diseases', path: '/diseases', icon: Shield },
+    { name: 'E-Books', path: '/ebooks', icon: BookOpen },
+    { name: 'Global Care', path: '/global-care', icon: Globe },
     { name: 'Consultation', path: '/consultation', icon: MessageCircle },
     { name: 'Shop', path: '/shop', icon: ShoppingBag },
   ];
 
   return (
-    <nav className="fixed top-0 w-full h-[64px] z-50 bg-surface border-b border-border-theme flex items-center justify-between px-6 px-4">
-      <div className="flex items-center space-x-8">
-        <Link to="/" className="flex items-center space-x-2">
-          <Heart className="text-primary w-6 h-6" />
-          <span className="text-xl font-extrabold text-primary tracking-tight">J-Nexus Health</span>
+    <nav className="fixed top-0 w-full h-[64px] z-50 bg-surface border-b border-border-theme flex items-center justify-between px-6">
+      <div className="flex items-center space-x-6">
+        <Link to="/" className="flex items-center space-x-3">
+          <Logo className="w-9 h-9" />
+          <span className="text-xl font-black text-slate-900 tracking-tighter uppercase">J-NEXUS</span>
         </Link>
         <div className="hidden lg:flex space-x-6">
           {navItems.map((item) => (

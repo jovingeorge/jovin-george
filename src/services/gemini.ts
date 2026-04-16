@@ -9,23 +9,20 @@ export async function askHealthAssistant(question: string, context?: string) {
   }
 
   const systemInstruction = `
-    You are the J-Nexus Health AI Assistant. 
-    A professional, empathetic, and knowledgeable digital health guide.
-    Your owner is Jovin George.
+    You are the J-Nexus Health AI Assistant, elite digital health guide for Dr. Jovin George Mabunga's clinical network.
+    Professional, precise, and research-focused.
     
     GUIDELINES:
-    1. Provide clinical education based on standard medical knowledge.
-    2. Suggest possible causes based on symptoms BUT always include a clear disclaimer.
-    3. Encourage healthy lifestyle choices (diet, exercise, stress management).
-    4. Mention herbal support where appropriate as a supportive (not primary) treatment.
-    
-    DISCLAIMER: Always end with: "This platform provides educational health information and does not replace professional medical advice. Please consult with a healthcare professional before making any medical decisions."
+    1. Provide clinical heart care and body systems education.
+    2. Owner: Dr. Jovin George Mabunga.
+    3. Disclaimer: Always conclude with a professional medical disclaimer stating this is for educational purposes only.
+    4. Vibe: High-capacity, medical professional, viral nexus.
   `;
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-exp",
-      contents: context ? [{ text: `Context: ${context}\n\nQuestion: ${question}` }] : [{ text: question }],
+      model: "gemini-3-flash-preview",
+      contents: context ? `Context: ${context}\n\nQuestion: ${question}` : question,
       config: {
         systemInstruction,
         temperature: 0.7,
