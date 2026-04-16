@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, User, Bot, AlertCircle, Loader2, Sparkles, Stethoscope } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Send, User, Bot, AlertCircle, Loader2, Sparkles, Stethoscope, Zap, ShieldCheck } from 'lucide-react';
 import { askHealthAssistant } from '../services/gemini';
+import Logo from '../components/Logo';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -10,7 +11,7 @@ interface Message {
 
 export default function AIAssistant() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: "Hello! I'm your J-Nexus Health AI Assistant. I can help you understand medical conditions, body systems, or explore healthy lifestyle choices. How can I assist you today?" }
+    { role: 'assistant', content: "SYSTEM ONLINE. I am the J-Nexus Clinical Intelligence Model. I can assist you with advanced diagnostics, heart care protocols, and herbal pharmacology insights. How can I serve your health today?" }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -41,83 +42,113 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4 h-[calc(100vh-120px)] flex flex-col">
-       <div className="mb-8 text-center">
-          <div className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-sm font-bold mb-4">
-             <Sparkles className="w-4 h-4 mr-2" />
-             AI Health Intelligence
-          </div>
-          <h1 className="text-4xl font-extrabold text-slate-900">Virtual Health Guide</h1>
-          <p className="mt-2 text-slate-500">Ask questions about medical terms, symptoms, or preventive care.</p>
-       </div>
-
-       <div className="flex-1 bg-white rounded-[2.5rem] shadow-2xl shadow-blue-100 border border-blue-50 overflow-hidden flex flex-col">
-          {/* Chat Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6">
-             {messages.map((msg, i) => (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  key={i}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                   <div className={`flex max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start gap-4`}>
-                      <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
-                        msg.role === 'user' ? 'bg-blue-600' : 'bg-slate-100 text-blue-600'
-                      }`}>
-                         {msg.role === 'user' ? <User className="text-white w-5 h-5" /> : <Bot className="w-5 h-5" />}
-                      </div>
-                      <div className={`p-4 rounded-3xl ${
-                        msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-slate-50 text-slate-800 rounded-tl-none border border-slate-100'
-                      }`}>
-                         <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                      </div>
-                   </div>
-                </motion.div>
-             ))}
-             {loading && (
-                <div className="flex justify-start">
-                   <div className="bg-slate-50 text-blue-600 p-4 rounded-3xl flex items-center space-x-3">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="text-sm font-medium">Assistant is thinking...</span>
-                   </div>
+    <div className="bg-bg min-h-screen pb-24 flex flex-col pt-32">
+       <div className="max-w-4xl mx-auto w-full px-6 flex-1 flex flex-col">
+          <div className="mb-12 text-center relative">
+             <div className="absolute top-1/2 left-0 w-full h-px bg-slate-200 -z-10" />
+             <div className="bg-bg px-8 inline-block">
+                <div className="inline-flex items-center px-4 py-2 bg-slate-900 text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                   <ShieldCheck className="w-4 h-4 mr-2 text-secondary" />
+                   Nexus Neural Network v2.0
                 </div>
-             )}
-          </div>
-
-          {/* Warning Disclaimer */}
-          <div className="px-6 py-2 bg-amber-50 border-y border-amber-100 flex items-center space-x-3 text-amber-800 text-[10px]">
-             <AlertCircle className="w-3 h-3 shrink-0" />
-             <p>This AI provides educational content only. It cannot diagnose or treat conditions. Always seek professional help in emergencies.</p>
-          </div>
-
-          {/* Input Area */}
-          <div className="p-6 bg-gray-50/50">
-             <div className="relative flex items-center">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask a health question... (e.g. Symptoms of anemia)"
-                  className="w-full bg-white border border-slate-200 rounded-2xl py-4 px-6 pr-16 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm shadow-blue-50/50"
-                  disabled={loading}
-                />
-                <button
-                  onClick={handleSend}
-                  disabled={loading}
-                  className="absolute right-2 p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50"
-                >
-                   <Send className="w-5 h-5" />
-                </button>
+                <h1 className="text-4xl md:text-6xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
+                   Clinical <span className="text-secondary italic">Intelligence</span>
+                </h1>
+                <p className="mt-4 text-slate-400 font-bold italic tracking-tight">Access high-capacity diagnostic logic across 150+ medical domains.</p>
              </div>
           </div>
-       </div>
 
-       <div className="mt-6 flex justify-center gap-4 flex-wrap">
-          <button onClick={() => setInput("What causes high blood pressure?")} className="text-xs font-medium px-4 py-2 bg-white border border-slate-200 rounded-full text-slate-600 hover:border-blue-400 hover:text-blue-600 transition-all">"High BP causes?"</button>
-          <button onClick={() => setInput("Describe the cardiovascular system.")} className="text-xs font-medium px-4 py-2 bg-white border border-slate-200 rounded-full text-slate-600 hover:border-blue-400 hover:text-blue-600 transition-all">"Cardiovascular system?"</button>
-          <button onClick={() => setInput("Safe herbs for heart health")} className="text-xs font-medium px-4 py-2 bg-white border border-slate-200 rounded-full text-slate-600 hover:border-blue-400 hover:text-blue-600 transition-all">"Safe heart herbs?"</button>
+          <div className="flex-1 bg-white rounded-[4rem] shadow-4xl shadow-slate-200 border border-slate-50 overflow-hidden flex flex-col relative">
+             <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                <Logo className="w-96 h-96" />
+             </div>
+
+             {/* Chat Messages */}
+             <div ref={scrollRef} className="flex-1 overflow-y-auto p-10 space-y-8 no-scrollbar relative z-10">
+                {messages.map((msg, i) => (
+                   <motion.div
+                     initial={{ opacity: 0, y: 15 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     key={i}
+                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                   >
+                      <div className={`flex max-w-[90%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start gap-6`}>
+                         <div className={`w-14 h-14 rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-2xl ${
+                           msg.role === 'user' ? 'bg-slate-900 shadow-slate-300' : 'bg-white border border-slate-100 text-secondary'
+                         }`}>
+                            {msg.role === 'user' ? <User className="text-white w-6 h-6" /> : <Bot className="w-6 h-6" />}
+                         </div>
+                         <div className={`p-8 rounded-[2.5rem] ${
+                           msg.role === 'user' 
+                             ? 'bg-slate-900 text-white rounded-tr-none shadow-3xl' 
+                             : 'bg-slate-50 text-slate-800 rounded-tl-none border border-slate-100 italic font-bold leading-relaxed'
+                         }`}>
+                            <p className="text-sm md:text-base whitespace-pre-wrap tracking-tight">{msg.content}</p>
+                            {msg.role === 'assistant' && (
+                               <div className="mt-4 pt-4 border-t border-slate-200 flex items-center gap-2 text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                                  <Zap className="w-3 h-3" />
+                                  Processed by J-Nexus Core
+                               </div>
+                            )}
+                         </div>
+                      </div>
+                   </motion.div>
+                ))}
+                {loading && (
+                   <div className="flex justify-start">
+                      <div className="bg-emerald-50 text-emerald-600 p-6 rounded-[2rem] flex items-center space-x-4 border border-emerald-100 shadow-xl shadow-emerald-500/5">
+                         <Loader2 className="w-5 h-5 animate-spin" />
+                         <span className="text-xs font-black uppercase tracking-widest">Neural weights synchronizing...</span>
+                      </div>
+                   </div>
+                )}
+             </div>
+
+             {/* Warning Disclaimer */}
+             <div className="px-10 py-5 bg-rose-50 border-y border-rose-100 flex items-center space-x-4 text-rose-800 text-[10px] font-black uppercase tracking-[0.1em] relative z-20">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                <p>Clinical Intelligence Warning: This AI is for educational logic only. Not a substitute for a physical examination by Dr. Jovin George Mabunga.</p>
+             </div>
+
+             {/* Input Area */}
+             <div className="p-10 bg-white relative z-20">
+                <div className="relative flex items-center">
+                   <input
+                     type="text"
+                     value={input}
+                     onChange={(e) => setInput(e.target.value)}
+                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                     placeholder="State your clinical query (e.g. Analysis of T2 Diabetes complications)..."
+                     className="w-full bg-slate-50 border-none rounded-[2rem] py-8 px-10 pr-24 focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all font-black text-slate-900 tracking-tighter placeholder:text-slate-300 shadow-inner"
+                     disabled={loading}
+                   />
+                   <button
+                     onClick={handleSend}
+                     disabled={loading}
+                     className="absolute right-4 p-5 bg-slate-900 text-white rounded-[1.5rem] hover:bg-primary transition-all disabled:opacity-50 shadow-2xl group"
+                   >
+                      <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                   </button>
+                </div>
+             </div>
+          </div>
+
+          <div className="mt-12 flex justify-center gap-6 flex-wrap">
+             {[
+               "What causes myocardial infarction?",
+               "Herbal protocols for stress reduction",
+               "Explain body system synergy",
+               "Dr Jovin's clinical philosophy"
+             ].map((suggest, i) => (
+                <button 
+                  key={i}
+                  onClick={() => setInput(suggest)} 
+                  className="text-[10px] font-black uppercase tracking-widest px-6 py-3 bg-white border border-slate-100 rounded-full text-slate-400 hover:border-secondary hover:text-secondary hover:-translate-y-1 transition-all shadow-xl shadow-slate-100"
+                >
+                   "{suggest}"
+                </button>
+             ))}
+          </div>
        </div>
     </div>
   );

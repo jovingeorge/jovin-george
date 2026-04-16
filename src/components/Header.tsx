@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Heart, Shield, Activity, ShoppingBag, User, MessageCircle, BookOpen, Globe } from 'lucide-react';
+import { Menu, X, Heart, Shield, Activity, ShoppingBag, User, MessageCircle, BookOpen, Globe, Languages } from 'lucide-react';
 import { auth } from '../lib/firebase';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { motion, AnimatePresence } from 'motion/react';
 import Logo from './Logo';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<FirebaseUser | null>(null);
+  const { language, setLanguage, t } = useLanguage();
   const location = useLocation();
 
   useEffect(() => {
@@ -17,29 +19,32 @@ export default function Header() {
   }, []);
 
   const navItems = [
-    { name: 'Cardiology', path: '/cardiology', icon: Heart },
-    { name: 'Diseases', path: '/diseases', icon: Shield },
-    { name: 'E-Books', path: '/ebooks', icon: BookOpen },
-    { name: 'Global Care', path: '/global-care', icon: Globe },
-    { name: 'Consultation', path: '/consultation', icon: MessageCircle },
-    { name: 'Shop', path: '/shop', icon: ShoppingBag },
+    { name: t('nav_diseases'), path: '/diseases', icon: Shield },
+    { name: t('nav_ebooks'), path: '/ebooks', icon: BookOpen },
+    { name: t('nav_hospitals'), path: '/global-care', icon: Globe },
+    { name: t('nav_consultation'), path: '/consultation', icon: MessageCircle },
+    { name: t('nav_account'), path: '/account', icon: User },
   ];
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'sw' : 'en');
+  };
 
   return (
     <nav className="fixed top-0 w-full h-[64px] z-50 bg-surface border-b border-border-theme flex items-center justify-between px-6">
       <div className="flex items-center space-x-6">
         <Link to="/" className="flex items-center space-x-3">
-          <Logo className="w-9 h-9" />
+          <Logo className="w-8 h-8" />
           <span className="text-xl font-black text-slate-900 tracking-tighter uppercase">J-NEXUS</span>
         </Link>
         <div className="hidden lg:flex space-x-6">
           {navItems.map((item) => (
             <NavLink
-              key={item.name}
+              key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors ${
-                  isActive ? 'text-primary border-b-2 border-primary' : 'text-text-muted hover:text-primary'
+                `text-[11px] font-black uppercase tracking-widest transition-all ${
+                  isActive ? 'text-primary border-b-2 border-primary' : 'text-slate-400 hover:text-primary'
                 }`
               }
             >
@@ -49,22 +54,37 @@ export default function Header() {
         </div>
       </div>
       
-      <div className="hidden lg:flex items-center space-x-4">
+      <div className="hidden lg:flex items-center space-x-6">
+        {/* Language Switcher */}
+        <button 
+          onClick={toggleLanguage}
+          className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-full border border-slate-200 text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-100 transition-all"
+        >
+          <Languages className="w-3.5 h-3.5" />
+          {language === 'en' ? 'English' : 'Kiswahili'}
+        </button>
+
         {user ? (
           <Link to="/account" className="flex items-center gap-3 px-3 py-1.5 bg-bg border border-border-theme rounded-full">
-            <div className="w-6 h-6 bg-slate-300 rounded-full overflow-hidden">
+            <div className="w-6 h-6 bg-slate-300 rounded-full overflow-hidden border border-slate-200">
                {user.photoURL && <img src={user.photoURL} alt="" referrerPolicy="no-referrer" />}
             </div>
-            <span className="text-[13px] font-semibold text-text-main">{user.displayName || 'Account'}</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-text-main">{user.displayName ? user.displayName.split(' ')[0] : 'Member'}</span>
           </Link>
         ) : (
-          <Link to="/login" className="btn-theme-primary !py-2">
-            Log In
+          <Link to="/login" className="btn-theme-primary !py-2 !px-6 !text-[10px]">
+            {language === 'en' ? 'Nexus Login' : 'Ingia'}
           </Link>
         )}
       </div>
 
-      <div className="flex items-center lg:hidden">
+      <div className="flex items-center lg:hidden gap-4">
+        <button 
+          onClick={toggleLanguage}
+          className="flex items-center gap-2 px-2 py-1 bg-slate-50 rounded-full border border-slate-200 text-[8px] font-black uppercase tracking-tighter text-slate-600"
+        >
+          {language === 'en' ? 'EN' : 'SW'}
+        </button>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="p-2 rounded-md text-text-muted hover:text-primary hover:bg-bg"
@@ -86,12 +106,12 @@ export default function Header() {
             <div className="pt-2 pb-6 space-y-1">
               {navItems.map((item) => (
                 <Link
-                  key={item.name}
+                  key={item.path}
                   to={item.path}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center px-6 py-4 text-base font-semibold text-text-muted hover:bg-bg hover:text-primary transition-colors"
+                  className="flex items-center px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-400 hover:bg-bg hover:text-primary transition-colors"
                 >
-                  <item.icon className="w-5 h-5 mr-3" />
+                  <item.icon className="w-4 h-4 mr-4" />
                   {item.name}
                 </Link>
               ))}
@@ -100,18 +120,18 @@ export default function Header() {
                   <Link
                     to="/account"
                     onClick={() => setIsOpen(false)}
-                    className="flex justify-center items-center py-3 bg-bg rounded-lg font-bold text-text-main"
+                    className="flex justify-center items-center py-4 bg-slate-900 text-white rounded-xl font-black uppercase text-[10px] tracking-widest"
                   >
                     <User className="w-5 h-5 mr-3" />
-                    My Account
+                    Nexus Account
                   </Link>
                 ) : (
                   <Link
                     to="/login"
                     onClick={() => setIsOpen(false)}
-                    className="btn-theme-primary block"
+                    className="btn-theme-primary block !py-4"
                   >
-                    Log In
+                    {language === 'en' ? 'Nexus Login' : 'Ingia kwenye Nexus'}
                   </Link>
                 )}
               </div>

@@ -6,8 +6,11 @@ import {
   MessageCircle, Zap, ShieldCheck, Bookmark
 } from "lucide-react";
 import Logo from "../components/Logo";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Home() {
+  const { t } = useLanguage();
+
   return (
     <div className="flex flex-col bg-bg min-h-screen">
       {/* Hero Section */}
@@ -24,19 +27,19 @@ export default function Home() {
                  Global Clinical Authority
               </div>
               <h1 className="text-6xl md:text-8xl font-black mb-8 leading-[0.9] tracking-tighter uppercase italic">
-                Saving Hearts <br />
-                <span className="text-secondary italic">Advancing Life</span>
+                {t('hero_title').split(' ')[0]} <br />
+                <span className="text-secondary italic">{t('hero_title').split(' ').slice(1).join(' ')}</span>
               </h1>
-              <p className="text-xl text-slate-300 leading-relaxed mb-12 max-w-lg font-medium">
-                J-Nexus Health is the premier medical platform led by Doctor Jovin George Mabunga, delivering elite cardiology insights and professional clinical education to the world.
+              <p className="text-xl text-slate-300 leading-relaxed mb-12 max-w-lg font-medium italic">
+                {t('hero_subtitle')}
               </p>
               <div className="flex flex-wrap gap-6">
-                 <Link to="/cardiology" className="px-10 py-5 bg-white text-slate-900 rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-primary hover:text-white transition-all shadow-2xl shadow-white/10">
-                    Explore Cardiology
+                 <Link to="/consultation" className="px-10 py-5 bg-white text-slate-900 rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-primary hover:text-white transition-all shadow-2xl shadow-white/10">
+                    {t('cta_consult')}
                  </Link>
-                 <Link to="/ebooks" className="px-10 py-5 bg-transparent border-2 border-white/20 text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-all flex items-center gap-3">
-                    <BookOpen className="w-4 h-4" />
-                    Medical E-Books
+                 <Link to="/diseases" className="px-10 py-5 bg-transparent border-2 border-white/20 text-white rounded-2xl font-black uppercase text-sm tracking-widest hover:bg-white/10 transition-all flex items-center gap-3">
+                    <Shield className="w-4 h-4" />
+                    {t('cta_explore')}
                  </Link>
               </div>
            </motion.div>

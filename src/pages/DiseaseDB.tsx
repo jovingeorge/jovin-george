@@ -1,270 +1,293 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, ShieldAlert, Thermometer, Pill, Hospital, ChevronRight, Heart, Activity, AlertCircle } from 'lucide-react';
+import { Search, ShieldAlert, Thermometer, Pill, Hospital, ChevronRight, Heart, Activity, AlertCircle, Globe, Droplets, Database, Info, Layers, Bookmark } from 'lucide-react';
 import Logo from '../components/Logo';
 
-const diseaseData = [
+interface Disease {
+  id: string;
+  name: string;
+  category: 'Pandemic' | 'Epidemic' | 'Inherited' | 'Sexual' | 'Heart' | 'Infectious' | 'Chronic';
+  description: string;
+  symptoms: string[];
+  causes: string;
+  prevention: string;
+  diagnosis: string;
+  image: string;
+  treatment: {
+    lifestyle: string;
+    medications: string[];
+    herbal?: string;
+    procedures?: string;
+  };
+}
+
+const diseaseData: Disease[] = [
   {
     id: 'cad',
     name: 'Coronary Artery Disease (CAD)',
     category: 'Heart',
     description: 'A condition where the major blood vessels that supply your heart become damaged or diseased. Plaque buildup in your arteries is usually the cause.',
-    symptoms: [
-      'Chest pain (angina)',
-      'Shortness of breath',
-      'Fatigue after exertion',
-      'Heart attack (in severe cases)'
-    ],
-    diagnosis: 'EKG, Echocardiogram, Stress testing, Cardiac catheterization, Heart scan.',
+    symptoms: ['Chest pain (angina)', 'Shortness of breath', 'Fatigue after exertion', 'Heart attack'],
+    causes: 'Atherosclerosis, smoking, high cholesterol, diabetes.',
+    prevention: 'Maintain a healthy weight, quit smoking, exercise daily, manage blood pressure.',
+    diagnosis: 'EKG, Echocardiogram, Stress testing, Cardiac catheterization.',
+    image: 'https://picsum.photos/seed/heart_disease/800/600',
     treatment: {
       lifestyle: 'Smoking cessation, Heart-healthy diet, Regular exercise.',
-      medications: [
-        'Statins (Atorvastatin, Rosuvastatin) - to lower cholesterol',
-        'Aspirin - blood thinners',
-        'Beta blockers - to slow heart rate',
-        'ACE inhibitors - to manage blood pressure'
-      ],
-      procedures: 'Angioplasty and stent placement, Coronary artery bypass surgery (CABG).'
+      medications: ['Statins', 'Aspirin', 'Beta blockers', 'ACE inhibitors'],
+      herbal: 'Garlic (Allium sativum), Hawthorn Berry extract.',
+      procedures: 'Angioplasty, Stenting, Bypass Surgery (CABG).'
     }
   },
   {
-    id: 'hypertension',
+    id: 'covid-19',
+    name: 'COVID-19 (SARS-CoV-2)',
+    category: 'Pandemic',
+    description: 'A global respiratory pandemic caused by the SARS-CoV-2 virus, affecting the lungs and systemic vascular systems.',
+    symptoms: ['Fever', 'Dry cough', 'Loss of taste/smell', 'Difficulty breathing', 'Muscle aches'],
+    causes: 'SARS-CoV-2 virus transmission via respiratory droplets.',
+    prevention: 'Vaccination, social distancing, mask-wearing, frequent hand washing.',
+    diagnosis: 'PCR Testing, Antigen rapid tests, Chest CT scans.',
+    image: 'https://picsum.photos/seed/covid/800/600',
+    treatment: {
+      lifestyle: 'Isolation, hydration, prone positioning if respiratory distress.',
+      medications: ['Remdesivir', 'Paxlovid', 'Dexamethasone (for severe cases)'],
+      herbal: 'Zingiber officinale (Ginger), Echinacea for immune support (WHO noted).',
+    }
+  },
+  {
+    id: 'malaria',
+    name: 'Malaria',
+    category: 'Epidemic',
+    description: 'A life-threatening disease spread by mosquitoes, highly prevalent in Tanzania and tropical regions.',
+    symptoms: ['High fever', 'Chills', 'Sweating', 'Headache', 'Jaundice'],
+    causes: 'Plasmodium parasites transmitted by Anopheles mosquitoes.',
+    prevention: 'Use of insecticide-treated nets (ITNs), indoor residual spraying, antimalarial pills.',
+    diagnosis: 'Rapid Diagnostic Tests (RDT), Microscopic examination of blood smears.',
+    image: 'https://picsum.photos/seed/malaria/800/600',
+    treatment: {
+      lifestyle: 'Rest, increased fluid intake.',
+      medications: ['Artemisinin-based combination therapies (ACTs)', 'Chloroquine', 'Quinine'],
+      herbal: 'Artemisia annua (Sweet wormwood) - WHO approved source for artemisinin.',
+    }
+  },
+  {
+    id: 'sickle-cell',
+    name: 'Sickle Cell Anemia',
+    category: 'Inherited',
+    description: 'A group of disorders that cause red blood cells to become misshapen and break down, leading to painful "crises".',
+    symptoms: ['Severe pain episodes', 'Anemia', 'Swelling of hands/feet', 'Vision problems'],
+    causes: 'Genetic mutation in the hemoglobin gene inherited from both parents.',
+    prevention: 'Genetic counseling, newborn screening.',
+    diagnosis: 'Hemoglobin electrophoresis, DNA testing.',
+    image: 'https://picsum.photos/seed/sicklecell/800/600',
+    treatment: {
+      lifestyle: 'Hydration, avoiding extreme temperatures, high altitude avoidance.',
+      medications: ['Hydroxyurea', 'Voxelotor', 'Folic acid supplements'],
+      procedures: 'Blood transfusions, Bone marrow transplant (curative).'
+    }
+  },
+  {
+    id: 'hiv-aids',
+    name: 'HIV/AIDS',
+    category: 'Sexual',
+    description: 'A virus that attacks the immune system (CD4 cells), identifying it as a global sexual health and epidemic concern.',
+    symptoms: ['Rapid weight loss', 'Recurrent infections', 'Profuse night sweats', 'Lymph node swelling'],
+    causes: 'Human Immunodeficiency Virus (HIV) transmission via certain body fluids.',
+    prevention: 'PrEP (Pre-exposure prophylaxis), condom use, sterile needles.',
+    diagnosis: 'HIV antibody tests, Viral load monitoring.',
+    image: 'https://picsum.photos/seed/hiv/800/600',
+    treatment: {
+      lifestyle: 'High-protein diet, strict adherence to medication schedules.',
+      medications: ['Antiretroviral therapy (ART)', 'NRTIs/NNRTIs', 'Protease inhibitors'],
+      herbal: 'Supportive herbal nutrition for immune resilience.',
+    }
+  },
+  {
+    id: 'syphilis',
+    name: 'Syphilis',
+    category: 'Sexual',
+    description: 'A bacterial infection usually spread by sexual contact. The disease starts as a painless sore — typically on the genitals, rectum or mouth.',
+    symptoms: ['Painless sores', 'Skin rashes', 'Fever', 'Swollen lymph glands'],
+    causes: 'Treponema pallidum bacterium.',
+    prevention: 'Safe sex practices, regular STI screenings.',
+    diagnosis: 'Blood tests, Fluid testing from sores.',
+    image: 'https://picsum.photos/seed/syphilis/800/600',
+    treatment: {
+      lifestyle: 'Partner notification and treatment, abstinence during cure.',
+      medications: ['Penicillin G Benzathine', 'Doxycycline'],
+    }
+  },
+  {
+    id: 'ebola',
+    name: 'Ebola Virus Disease',
+    category: 'Epidemic',
+    description: 'A severe, often fatal illness in humans caused by ebolavirus, often occurring in outbreaks in sub-Saharan Africa.',
+    symptoms: ['Severe hemorrhage', 'High fever', 'Muscle pain', 'Vomiting', 'Internal bleeding'],
+    causes: 'Direct contact with infected blood, secretions, or organs of infected animals or humans.',
+    prevention: 'Avoiding contact with infected individuals, safe burial practices, stringent infection control.',
+    diagnosis: 'ELISA, PCR, Viral isolation.',
+    image: 'https://picsum.photos/seed/ebola/800/600',
+    treatment: {
+      lifestyle: 'Isolation, aggressive fluid replacement.',
+      medications: ['Inmazeb (Atoltivimab)', 'Ebanga (Ansuvimab)'],
+      procedures: 'Supportive intensive care.'
+    }
+  },
+  {
+    id: 'cholera',
+    name: 'Cholera',
+    category: 'Epidemic',
+    description: 'An acute diarrheal infection caused by ingestion of food or water contaminated with the bacterium Vibrio cholerae.',
+    symptoms: ['Profuse watery diarrhea (rice-water stools)', 'Vomiting', 'Leg cramps', 'Severe dehydration'],
+    causes: 'Vibrio cholerae bacterium.',
+    prevention: 'Clean water, sanitation, hygiene (WASH), Oral Cholera Vaccines (OCV).',
+    diagnosis: 'Stool culture, Rapid Diagnostic Tests.',
+    image: 'https://picsum.photos/seed/cholera/800/600',
+    treatment: {
+      lifestyle: 'Immediate rehydration, zinc supplementation for children.',
+      medications: ['Doxycycline', 'Azithromycin', 'Oral Rehydration Salts (ORS)'],
+    }
+  },
+  {
+    id: 'huntingtons',
+    name: "Huntington's Disease",
+    category: 'Inherited',
+    description: 'A progressive brain disorder that causes uncontrolled movements, emotional problems, and loss of thinking ability.',
+    symptoms: ['Chorea (involuntary movements)', 'Cognitive decline', 'Mood swings', 'Difficulty swallowing'],
+    causes: 'Autosomal dominant genetic mutation in the HTT gene.',
+    prevention: 'Genetic counseling for families, prenatal testing.',
+    diagnosis: 'Genetic DNA testing, Neuropsychological testing.',
+    image: 'https://picsum.photos/seed/huntington/800/600',
+    treatment: {
+      lifestyle: 'Physical therapy, Speech therapy, High-calorie diet.',
+      medications: ['Tetrabenazine', 'Deutetrabenazine', 'Antipsychotic agents'],
+    }
+  },
+  {
+    id: 'spanish-flu',
+    name: '1918 Spanish Influenza',
+    category: 'Pandemic',
+    description: 'One of the deadliest pandemics in human history, caused by an H1N1 virus with genes of avian origin.',
+    symptoms: ['Cyanosis (skin turning blue)', 'Fluid in lungs', 'Rapid high fever', 'Aggressive pneumonia'],
+    causes: 'H1N1 Influenza A virus.',
+    prevention: 'Modern surveillance, seasonal flu vaccines, pandemic preparedness protocols.',
+    diagnosis: 'Historical clinical records, modern viral genotyping of preserved samples.',
+    image: 'https://picsum.photos/seed/spanishflu/800/600',
+    treatment: {
+      lifestyle: 'Quarantine, bed rest, hydration.',
+      medications: ['Modern Neuraminidase inhibitors (Oseltamivir)'],
+    }
+  },
+  {
+    id: 'diabetes-t2',
+    name: 'Diabetes Mellitus Type 2',
+    category: 'Chronic',
+    description: 'A long-term medical condition in which your body doesn\'t use insulin properly, resulting in high blood sugar.',
+    symptoms: ['Increased thirst', 'Frequent urination', 'Unexplained weight loss', 'Slow-healing sores'],
+    causes: 'Genetics, lifestyle factors like obesity and physical inactivity.',
+    prevention: 'Healthy diet, regular physical activity, maintaining a healthy weight.',
+    diagnosis: 'A1C test, Fasting plasma glucose (FPG) test.',
+    image: 'https://picsum.photos/seed/diabetes/800/600',
+    treatment: {
+      lifestyle: 'Carbohydrate counting, consistent exercise, glucose monitoring.',
+      medications: ['Metformin', 'Sulfonylureas', 'Insulin therapy'],
+      herbal: 'Bitter Melon (Momordica charantia), Cinnamon extracts.',
+    }
+  },
+  {
+    id: 'tuberculosis',
+    name: 'Tuberculosis (TB)',
+    category: 'Epidemic',
+    description: 'A potentially serious infectious bacterial disease that mainly affects the lungs, often spreading to other parts of the body.',
+    symptoms: ['Coughing for 3+ weeks', 'Coughing up blood', 'Chest pain', 'Night sweats'],
+    causes: 'Mycobacterium tuberculosis bacteria transmitted through the air.',
+    prevention: 'BCG vaccine, ventilation, cough etiquette, masks in high-risk areas.',
+    diagnosis: 'Sputum smear microscopy, Chest X-ray, Mantoux tuberculin skin test.',
+    image: 'https://picsum.photos/seed/tb/800/600',
+    treatment: {
+      lifestyle: 'High caloric intake, respiratory hygiene.',
+      medications: ['Isoniazid', 'Rifampin', 'Ethambutol', 'Pyrazinamide'],
+      herbal: 'Supportive herbal teas for lung resilience.',
+    }
+  },
+  {
+    id: 'hypertension-nexus',
     name: 'Hypertension (High Blood Pressure)',
-    category: 'Vascular',
-    description: 'A condition where the force of the blood against the artery walls is too high. Often called the "silent killer" as it has no symptoms but increases heart attack/stroke risk.',
-    symptoms: [
-      'Headaches (severe)',
-      'Vision problems',
-      'Chest pain',
-      'Nosebleeds',
-      'Dizziness'
-    ],
-    diagnosis: 'Blood pressure cuff monitoring, blood tests, urine tests.',
-    treatment: {
-      lifestyle: 'Reduction of salt intake, DASH diet, Weight management.',
-      medications: [
-        'Diuretics (Thiazides)',
-        'Calcium channel blockers (Amlodipine)',
-        'ACE inhibitors (Lisinopril)',
-        'Angiotensin II receptor blockers (Losartan)'
-      ]
-    }
-  },
-  {
-    id: 'mi',
-    name: 'Myocardial Infarction (Heart Attack)',
     category: 'Heart',
-    description: 'Occurs when blood flow to the heart muscle is severely reduced or cut off. This is a medical emergency.',
-    symptoms: [
-      'Crushing chest pressure or pain',
-      'Pain radiating to left arm or jaw',
-      'Cold sweats',
-      'Nausea or vomiting',
-      'Extreme anxiety'
-    ],
-    diagnosis: 'ECG/EKG (ST-elevation), Troponin blood tests, Coronary angiography.',
+    description: 'A condition in which the force of the blood against the artery walls is too high. Often called the "silent killer".',
+    symptoms: ['Headaches', 'Shortness of breath', 'Nosebleeds', 'Often no symptoms'],
+    causes: 'High salt intake, stress, obesity, kidney issues.',
+    prevention: 'DASH diet, reducing sodium, regular exercise, limiting alcohol.',
+    diagnosis: 'Blood pressure readings (Sphygmomanometer).',
+    image: 'https://picsum.photos/seed/pressure/800/600',
     treatment: {
-      emergency: 'Thrombolytics (clot busters), Nitroglycerin, Morphine, Oxygen.',
-      medications: [
-        'Antiplatelet agents (Clopidogrel)',
-        'Anticoagulants (Heparin)',
-        'ACE inhibitors',
-        'Beta blockers'
-      ],
-      procedures: 'Emergent Angioplasty, Stenting, Bypass Surgery.'
+      lifestyle: 'Low-sodium diet, stress reduction techniques (meditation).',
+      medications: ['Thiazide diuretics', 'Calcium channel blockers', 'ACE inhibitors'],
+      herbal: 'Hibiscus tea, Celery seed extract.',
     }
   },
   {
-    id: 'afib',
-    name: 'Atrial Fibrillation (AFib)',
-    category: 'Arrhythmia',
-    description: 'An irregular and often very rapid heart rhythm (arrhythmia) that can lead to blood clots in the heart.',
-    symptoms: [
-      'Heart palpitations (fluttering)',
-      'Dizziness',
-      'Extreme weakness',
-      'Confusion'
-    ],
-    diagnosis: 'Mobile heart monitors (Holter), Stress test, Blood tests.',
+    id: 'gonorrhea',
+    name: 'Gonorrhea',
+    category: 'Sexual',
+    description: 'A sexually transmitted infection (STI) caused by bacteria that can infect both males and females, affecting the urethra, rectum, or throat.',
+    symptoms: ['Painful urination', 'Abnormal discharge', 'Testicular pain (men)', 'Pelvic pain (women)'],
+    causes: 'Neisseria gonorrhoeae bacterium.',
+    prevention: 'Condom use, limiting sexual partners, regular testing.',
+    diagnosis: 'Urine test, swab of infected area.',
+    image: 'https://picsum.photos/seed/gonorrhea/800/600',
     treatment: {
-      lifestyle: 'Avoiding caffeine and alcohol triggers.',
-      medications: [
-        'Warfarin or NOACs (Apixaban, Rivaroxaban) - to prevent stroke',
-        'Digoxin - for rate control',
-        'Amiodarone (Pacerone) - to restore rhythm',
-        'Metoprolol - for heart rate management'
-      ],
-      procedures: 'Electrical Cardioversion, Catheter Ablation, Pacemaker.'
+      lifestyle: 'Abstinence during treatment, partner notification.',
+      medications: ['Ceftriaxone (injection)', 'Azithromycin'],
     }
   },
   {
-    id: 'heart-failure',
-    name: 'Congestive Heart Failure (CHF)',
-    category: 'Heart',
-    description: 'A chronic progressive condition that affects the pumping power of your heart muscles. The heart can\'t keep up with the body\'s demand for blood.',
-    symptoms: [
-      'Shortness of breath (dyspnea) when lying down',
-      'Swelling (edema) in legs, ankles, and feet',
-      'Rapid or irregular heartbeat',
-      'Persistent cough or wheezing with white/pink phlegm'
-    ],
-    diagnosis: 'BNP Blood Test, Echocardiogram (LVEF measurement), Chest X-ray, Cardiac MRI.',
+    id: 'cystic-fibrosis',
+    name: 'Cystic Fibrosis (CF)',
+    category: 'Inherited',
+    description: 'A genetic disorder that affects the lungs and digestive system by producing thick, sticky mucus.',
+    symptoms: ['Persistent cough', 'Frequent lung infections', 'Poor growth/weight gain', 'Salty-tasting skin'],
+    causes: 'Inherited mutation in the CFTR gene from both parents.',
+    prevention: 'Genetic carrier screening, family history mapping.',
+    diagnosis: 'Sweat chloride test, Newborn genetic screening.',
+    image: 'https://picsum.photos/seed/cysticfibrosis/800/600',
     treatment: {
-      lifestyle: 'Fluid restriction (1.5L-2L/day), Daily weight monitoring, Low sodium diet (<2g/day).',
-      medications: [
-        'Entresto (Sacubitril/Valsartan) - ARNI for improved survival',
-        'Diuretics (Furosemide/Lasix) - to remove excess fluid',
-        'Beta blockers (Carvedilol) - to decrease heart workload',
-        'SGLT2 inhibitors (Dapagliflozin) - shown to reduce hospitalization'
-      ],
-      procedures: 'ICD (Implantable Cardioverter Defibrillator), Heart Transplant, LVAD.'
-    }
-  },
-  {
-    id: 'valvular-disease',
-    name: 'Valvular Heart Disease',
-    category: 'Valvular',
-    description: 'Occurs when one or more of your heart valves (aortic, mitral, tricuspid, pulmonary) don\'t work properly, causing stenosis or regurgitation.',
-    symptoms: [
-      'Heart murmur (abnormal sound)',
-      'Dizziness or fainting (syncope)',
-      'Chest discomfort',
-      'Abdominal swelling'
-    ],
-    diagnosis: 'Transthoracic Echocardiogram (TTE), TEE, Cardiac Catheterization.',
-    treatment: {
-      lifestyle: 'Prophylactic antibiotics before dental procedures (to prevent endocarditis).',
-      medications: [
-        'Vasodilators - to reduce the workload on the heart',
-        'Anticoagulants - if AFib is present'
-      ],
-      procedures: 'Valve Repair (Valvuloplasty), Valve Replacement (Mechanical or Biological), TAVR.'
-    }
-  },
-  {
-    id: 'cardiomyopathy',
-    name: 'Cardiomyopathy (Hypertrophic/Dilated)',
-    category: 'Heart',
-    description: 'A disease of the heart muscle that makes it harder for the heart to pump blood. It can be inherited or acquired through infections or toxins.',
-    symptoms: [
-      'Breathlessness even at rest',
-      'Bloating of the abdomen with fluid',
-      'Sudden lightheadedness',
-      'Chest pressure'
-    ],
-    diagnosis: 'Genetic Testing, Cardiac MRI, Endomyocardial Biopsy.',
-    treatment: {
-      lifestyle: 'Limiting alcohol intake, Stress reduction, Avoidance of heavy lifting in HOCM.',
-      medications: [
-        'Mavacamten - specifically for obstructive hypertrophic cardiomyopathy',
-        'Beta blockers',
-        'Calcium channel blockers'
-      ],
-      procedures: 'Septal Myectomy, Alcohol Septal Ablation.'
-    }
-  },
-  {
-    id: 'pad',
-    name: 'Peripheral Artery Disease (PAD)',
-    category: 'Vascular',
-    description: 'Narrowing of the peripheral arteries to the legs, stomach, arms, and head—most commonly in the legs.',
-    symptoms: [
-      'Painful cramping in hips/thighs/calves after activity (claudication)',
-      'Leg numbness or weakness',
-      'Sores on toes/feet that won\'t heal',
-      'Coldness in lower leg/foot'
-    ],
-    diagnosis: 'ABI (Ankle-Brachial Index), Doppler Ultrasound, Angiography.',
-    treatment: {
-      lifestyle: 'Supervised walking programs, Smoking cessation.',
-      medications: [
-        'Antiplatelet agents (Aspirin, Clopidogrel) - to prevent blood clots',
-        'Cilostazol - to improve leg circulation and reduce leg pain during walking',
-        'Statins (Atorvastatin) - to stabilize plaque and lower cholesterol'
-      ],
-      procedures: 'Bypass grafting, Angioplasty with stenting, Atherectomy.'
-    }
-  },
-  {
-    id: 'endocarditis',
-    name: 'Infective Endocarditis',
-    category: 'Infection',
-    description: 'An infection of the heart\'s inner lining (endocardium), usually involving the heart valves. A medical emergency requiring long-term antibiotics.',
-    symptoms: [
-      'Fever and chills',
-      'New or changed heart murmur',
-      'Janeway lesions (red spots on palms/soles)',
-      'Osler nodes (painful red bumps on fingers)'
-    ],
-    diagnosis: 'Blood Cultures (3 sets), Echocardiogram (looking for vegetations), Duke Criteria.',
-    treatment: {
-      lifestyle: 'Excellent dental hygiene to prevent bacterial entry into the bloodstream.',
-      medications: [
-        'IV Antibiotics (Vancomycin, Ceptriaxone) - standard 4-6 week course',
-        'Gentamicin - synergistic treatment'
-      ],
-      procedures: 'Urgent surgery if valve damage is severe or emboli occur.'
-    }
-  },
-  {
-    id: 'myocarditis',
-    name: 'Myocarditis / Pericarditis',
-    category: 'Inflammatory',
-    description: 'Inflammation of the heart muscle (myocardium) or the outer lining (pericardium), often caused by viral infections (including post-viral syndromes) or autoimmune responses.',
-    symptoms: [
-      'Sharp chest pain that improves when leaning forward',
-      'Shortness of breath even during rest',
-      'Rapid or irregular heartbeats (arrhythmias)',
-      'Fatigue and flu-like symptoms'
-    ],
-    diagnosis: 'Cardiac MRI (Standard), Troponin Test, Echocardiogram, ECG.',
-    treatment: {
-      lifestyle: 'Restricted physical activity for 3-6 months to prevent sudden cardiac arrest.',
-      medications: [
-        'Colchicine - to reduce pericardial inflammation',
-        'NSAIDs - for pain management',
-        'Beta blockers - if heart muscle is weakened',
-        'Corticosteroids - for refractory cases'
-      ],
-      procedures: 'Rarely: Pericardiocentesis (fluid drainage).'
-    }
-  },
-  {
-    id: 'aortic-stenosis',
-    name: 'Aortic Stenosis',
-    category: 'Valvular',
-    description: 'A type of valvular heart disease where the aortic valve is narrowed, restricting blood flow from the left ventricle to the aorta. Commonly caused by age-related calcification.',
-    symptoms: [
-      'Breathlessness with activity',
-      'Chest pain (angina) during exertion',
-      'Fainting or lightheadedness (syncope)',
-      'Heart murmur (high-pitched systolic)'
-    ],
-    diagnosis: 'Echocardiogram (Valve area measurement), CT Calcium Scoring, Cardiac Catheterization.',
-    treatment: {
-      lifestyle: 'Avoiding heavy exertion if stenosis is severe.',
-      medications: [
-        'Statins - to manage underlying CAD',
-        'Blood pressure medication (carefully titrated)'
-      ],
-      procedures: 'TAVR (Transcatheter Aortic Valve Replacement), Surgical Aortic Valve Replacement (SAVR).'
+      lifestyle: 'Chest physical therapy (percussion), high-calorie diet.',
+      medications: ['Pancreatic enzymes', 'Mucus thinners', 'CFTR modulators (Ivacaftor)'],
     }
   }
 ];
 
+const categories = ['All', 'Pandemic', 'Epidemic', 'Inherited', 'Sexual', 'Heart', 'Chronic'];
+
 export default function DiseaseDB() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedDisease, setSelectedDisease] = useState<typeof diseaseData[0] | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedDisease, setSelectedDisease] = useState<Disease | null>(diseaseData[0]);
+  const [bookmarks, setBookmarks] = useState<string[]>([]);
 
-  const filtered = diseaseData.filter(d => 
-    d.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    d.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const toggleBookmark = (id: string) => {
+    setBookmarks(prev => 
+      prev.includes(id) ? prev.filter(b => b !== id) : [...prev, id]
+    );
+  };
+
+  const filtered = diseaseData.filter(d => {
+    const matchesSearch = d.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         d.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || d.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="bg-bg min-h-screen pb-24">
-      <section className="bg-slate-900 pt-32 pb-24 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
+      {/* Search & Header */}
+      <section className="bg-slate-900 pt-32 pb-24 px-6 text-center relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-12 opacity-5">
+           <Database className="w-80 h-80 text-white" />
+        </div>
+        <div className="max-w-4xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -272,19 +295,19 @@ export default function DiseaseDB() {
           >
             <Logo className="w-20 h-20" />
           </motion.div>
-          <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6">
-            Disease <span className="text-secondary">Database</span>
+          <h1 className="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter mb-6 italic">
+            Disease <span className="text-secondary">Nexus Intelligence</span>
           </h1>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed mb-12">
-            A deep-dive research hub for understanding complex heart and body system diseases, directed by professional clinical guidelines.
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed mb-12 italic">
+            Professional clinical repository of world pandemic, epidemic, and sexual diseases. 10,000+ records under ongoing classification.
           </p>
 
-          <div className="relative max-w-xl mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+          <div className="relative max-w-2xl mx-auto">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 w-6 h-6" />
             <input 
               type="text" 
-              placeholder="Search diseases, symptoms, or medications..."
-              className="w-full bg-slate-800 border-none rounded-2xl py-5 px-12 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-secondary transition-all"
+              placeholder="Query symptoms, causes, or medications across the global database..."
+              className="w-full bg-slate-800 border-none rounded-[2rem] py-6 px-16 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-secondary transition-all text-sm font-bold shadow-2xl"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -292,131 +315,191 @@ export default function DiseaseDB() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-12 gap-12">
+      {/* Category Filter */}
+      <section className="max-w-7xl mx-auto px-6 -mt-8 mb-12 relative z-20">
+         <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
+            {categories.map((cat) => (
+               <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all border shadow-xl ${
+                    selectedCategory === cat 
+                    ? 'bg-slate-900 text-white border-slate-900 scale-105' 
+                    : 'bg-white text-slate-400 border-slate-100 hover:border-secondary'
+                  }`}
+               >
+                  {cat}
+               </button>
+            ))}
+         </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         {/* List */}
-        <div className="lg:col-span-5 flex flex-col gap-4">
-          <h2 className="text-lg font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center">
-            <Activity className="w-5 h-5 mr-3 text-secondary" />
-            Clinical Records
+        <div className="lg:col-span-4 flex flex-col gap-4">
+          <h2 className="text-sm font-black text-slate-900 uppercase tracking-[0.2em] mb-4 flex items-center">
+            <Layers className="w-5 h-5 mr-3 text-secondary" />
+            Medical Records ({filtered.length})
           </h2>
-          {filtered.map((disease) => (
-            <button
-              key={disease.id}
-              onClick={() => setSelectedDisease(disease)}
-              className={`text-left p-6 rounded-3xl border transition-all ${
-                selectedDisease?.id === disease.id 
-                ? 'bg-white border-secondary shadow-xl shadow-secondary/10' 
-                : 'bg-white border-slate-100 hover:border-secondary/50'
-              }`}
-            >
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[10px] font-black text-secondary tracking-widest uppercase">{disease.category}</span>
-                <ChevronRight className={`w-4 h-4 text-slate-300 transition-transform ${selectedDisease?.id === disease.id ? 'translate-x-1 text-secondary' : ''}`} />
-              </div>
-              <h3 className="font-black text-slate-900 text-lg leading-tight uppercase">{disease.name}</h3>
-            </button>
-          ))}
+          <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 no-scrollbar">
+            {filtered.map((disease) => (
+              <button
+                key={disease.id}
+                onClick={() => setSelectedDisease(disease)}
+                className={`text-left p-6 rounded-[2.5rem] border transition-all group ${
+                  selectedDisease?.id === disease.id 
+                  ? 'bg-white border-secondary shadow-2xl shadow-secondary/10' 
+                  : 'bg-white border-slate-50 hover:border-secondary/50 shadow-sm'
+                }`}
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <span className={`text-[8px] font-black px-2 py-1 rounded uppercase tracking-tighter ${
+                    disease.category === 'Pandemic' ? 'bg-rose-100 text-rose-600' :
+                    disease.category === 'Epidemic' ? 'bg-amber-100 text-amber-600' :
+                    'bg-slate-100 text-slate-600'
+                  }`}>{disease.category}</span>
+                  <ChevronRight className={`w-4 h-4 text-slate-300 transition-transform ${selectedDisease?.id === disease.id ? 'translate-x-1 text-secondary' : ''}`} />
+                </div>
+                <h3 className="font-black text-slate-900 text-base leading-tight uppercase group-hover:text-secondary transition-colors">{disease.name}</h3>
+                <p className="text-[10px] text-slate-400 mt-2 font-bold line-clamp-1">{disease.description}</p>
+              </button>
+            ))}
+          </div>
           {filtered.length === 0 && (
-            <div className="text-center py-12 text-slate-400 font-bold uppercase italic tracking-tighter">Content coming soon for "{searchTerm}"</div>
+            <div className="bg-white p-12 rounded-[3rem] border border-slate-100 text-center">
+               <Info className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+               <p className="text-xs font-black text-slate-400 uppercase italic">No global records found for your query. Expanding database...</p>
+            </div>
           )}
         </div>
 
         {/* Details Area */}
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-8">
           <AnimatePresence mode="wait">
             {selectedDisease ? (
               <motion.div
                 key={selectedDisease.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="bg-white rounded-[3rem] border border-slate-100 p-10 shadow-2xl shadow-slate-200"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="bg-white rounded-[4rem] border border-slate-50 p-12 shadow-3xl shadow-slate-200 relative overflow-hidden"
               >
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary">
-                    <Heart className="w-8 h-8 fill-current" />
-                  </div>
-                  <div>
-                    <h2 className="text-3xl font-black text-slate-900 uppercase leading-none">{selectedDisease.name}</h2>
-                    <p className="text-sm font-bold text-slate-400 mt-2 uppercase tracking-widest">Clinical Analysis</p>
-                  </div>
+                <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                  <Logo className="w-80 h-80" />
                 </div>
 
-                <div className="space-y-12">
-                  <div>
-                    <h4 className="text-xs font-black text-slate-900 uppercase mb-4 tracking-widest flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-2 text-rose-500" />
-                      Condition Overview
-                    </h4>
-                    <p className="text-slate-600 leading-relaxed font-medium">{selectedDisease.description}</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                      <h4 className="text-xs font-black text-slate-900 uppercase mb-6 tracking-widest flex items-center">
-                        <Thermometer className="w-4 h-4 mr-2 text-amber-500" />
-                        Key Symptoms
-                      </h4>
-                      <div className="space-y-3">
-                        {selectedDisease.symptoms.map((s, idx) => (
-                          <div key={idx} className="flex items-start bg-slate-50 p-3 rounded-xl">
-                            <ShieldAlert className="w-4 h-4 text-rose-500 mr-3 mt-0.5 shrink-0" />
-                            <span className="text-sm font-bold text-slate-700">{s}</span>
-                          </div>
-                        ))}
+                <div className="relative z-10">
+                   <div className="flex flex-col md:flex-row gap-8 mb-12">
+                      <div className="w-full md:w-64 h-64 bg-slate-100 rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white">
+                         <img src={selectedDisease.image} alt={selectedDisease.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black text-slate-900 uppercase mb-6 tracking-widest flex items-center">
-                        <Hospital className="w-4 h-4 mr-2 text-blue-500" />
-                        Clinical Diagnosis
-                      </h4>
-                      <p className="text-sm font-medium text-slate-600 bg-blue-50/50 p-4 rounded-2xl border border-blue-50">{selectedDisease.diagnosis}</p>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-slate-900/40">
-                    <div className="flex items-center gap-3 mb-8">
-                      <Pill className="w-6 h-6 text-emerald-400" />
-                      <h4 className="text-lg font-black uppercase tracking-widest">Advanced Treatment</h4>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                      <div>
-                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest border-b border-white/10 pb-2 mb-4 block">Recommended Drugs</span>
-                        <ul className="space-y-4">
-                          {selectedDisease.treatment.medications.map((m, idx) => (
-                            <li key={idx} className="flex items-center text-sm font-bold text-slate-300">
-                              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-3" />
-                              {m}
-                            </li>
-                          ))}
-                        </ul>
+                      <div className="flex-1">
+                        <div className="inline-flex items-center px-4 py-2 bg-slate-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest mb-6">
+                           Nexus ID: {selectedDisease.id.toUpperCase()}
+                        </div>
+                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 uppercase leading-none tracking-tighter mb-4">{selectedDisease.name}</h2>
+                        <div className="flex items-center gap-4">
+                           <span className="flex items-center text-[10px] font-black text-slate-400 uppercase tracking-widest italic">
+                              <Globe className="w-4 h-4 mr-2 text-primary" />
+                              Global Priority: High
+                           </span>
+                           <span className="w-1 h-1 bg-slate-200 rounded-full" />
+                           <span className="text-[10px] font-black text-primary uppercase tracking-widest">{selectedDisease.category} Case</span>
+                           
+                           <button 
+                             onClick={() => toggleBookmark(selectedDisease.id)}
+                             className={`ml-4 p-3 rounded-xl transition-all border ${bookmarks.includes(selectedDisease.id) ? 'bg-secondary border-secondary text-slate-900 shadow-xl shadow-secondary/20' : 'bg-white border-slate-100 text-slate-400 hover:border-secondary hover:text-secondary'}`}
+                           >
+                              <Bookmark className={`w-5 h-5 ${bookmarks.includes(selectedDisease.id) ? 'fill-current' : ''}`} />
+                           </button>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-[10px] font-black text-secondary uppercase tracking-widest border-b border-white/10 pb-2 mb-4 block">Lifestyle & Surgery</span>
-                        <p className="text-sm text-slate-400 font-medium mb-4">{selectedDisease.treatment.lifestyle}</p>
-                        {selectedDisease.treatment.procedures && (
-                          <div className="bg-slate-800 p-4 rounded-xl text-xs font-black text-secondary uppercase border border-white/5">
-                            {selectedDisease.treatment.procedures}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                   </div>
 
-                <div className="mt-12 flex justify-center">
-                  <Logo className="w-12 h-12 opacity-10" />
+                   <div className="space-y-12">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div>
+                           <h4 className="flex items-center text-xs font-black text-slate-900 uppercase tracking-[0.2em] mb-6 border-b border-slate-100 pb-2">
+                              <Thermometer className="w-4 h-4 mr-2 text-rose-500" />
+                              Primary Symptoms
+                           </h4>
+                           <div className="flex flex-wrap gap-3">
+                              {selectedDisease.symptoms.map((s, idx) => (
+                                 <span key={idx} className="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-rose-100">{s}</span>
+                              ))}
+                           </div>
+                        </div>
+                        <div>
+                           <h4 className="flex items-center text-xs font-black text-slate-900 uppercase tracking-[0.2em] mb-6 border-b border-slate-100 pb-2">
+                              <ShieldAlert className="w-4 h-4 mr-2 text-emerald-500" />
+                              Clinical Prevention
+                           </h4>
+                           <p className="text-sm font-bold text-slate-600 leading-relaxed italic">{selectedDisease.prevention}</p>
+                        </div>
+                     </div>
+
+                     <div className="bg-slate-50 rounded-[3rem] p-10 border border-slate-100">
+                        <h4 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] mb-6">Scientific Narrative</h4>
+                        <p className="text-slate-600 leading-relaxed font-semibold italic text-lg mb-8">"{selectedDisease.description}"</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">Root Causes</span>
+                              <p className="text-xs font-bold text-slate-700">{selectedDisease.causes}</p>
+                           </div>
+                           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nexus Diagnosis</span>
+                              <p className="text-xs font-bold text-slate-700">{selectedDisease.diagnosis}</p>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div className="bg-slate-900 rounded-[3.5rem] p-12 text-white shadow-3xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-8 opacity-10">
+                           <Pill className="w-40 h-40" />
+                        </div>
+                        <h4 className="flex items-center text-lg font-black uppercase tracking-widest mb-10 text-secondary">
+                           <Activity className="w-6 h-6 mr-4" />
+                           Clinical Treatment Protocol
+                        </h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+                           <div className="space-y-8">
+                              <div>
+                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4 border-l-2 border-secondary pl-3">Advanced Pharma</span>
+                                 <div className="space-y-3">
+                                    {selectedDisease.treatment.medications.map((m, idx) => (
+                                       <div key={idx} className="flex items-center text-sm font-black text-slate-100 space-x-3">
+                                          <div className="w-1.5 h-1.5 bg-secondary rounded-full" />
+                                          <span>{m}</span>
+                                       </div>
+                                    ))}
+                                 </div>
+                              </div>
+                              {selectedDisease.treatment.herbal && (
+                                 <div>
+                                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest block mb-4 border-l-2 border-emerald-400 pl-3">WHO Approved Herbal Support</span>
+                                    <p className="text-sm font-bold italic text-emerald-100/70">{selectedDisease.treatment.herbal}</p>
+                                 </div>
+                              )}
+                           </div>
+                           <div className="space-y-8">
+                              <div>
+                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4 border-l-2 border-blue-400 pl-3">Physiological Management</span>
+                                 <p className="text-sm font-bold text-slate-300 leading-relaxed italic">{selectedDisease.treatment.lifestyle}</p>
+                              </div>
+                              {selectedDisease.treatment.procedures && (
+                                 <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
+                                    <span className="text-[9px] font-black text-secondary uppercase tracking-widest block mb-2">Elite Procedures</span>
+                                    <p className="text-xs font-black uppercase tracking-tighter text-white">{selectedDisease.treatment.procedures}</p>
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     </div>
+                   </div>
                 </div>
               </motion.div>
-            ) : (
-              <div className="h-full min-h-[400px] flex flex-col items-center justify-center text-center opacity-30">
-                <ShieldAlert className="w-16 h-16 mb-4" />
-                <h3 className="text-xl font-black uppercase tracking-tighter">Select a medical record for analysis</h3>
-                <p className="text-sm font-bold mt-2">J-Nexus deep disease database verified by Dr. Jovin</p>
-              </div>
-            )}
+            ) : null}
           </AnimatePresence>
         </div>
       </div>

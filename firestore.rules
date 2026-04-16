@@ -97,6 +97,12 @@ service cloud.firestore {
       allow update: if (isDocOwner() || isAdmin()) && isValidBooking(request.resource.data);
     }
 
+    match /orders/{orderId} {
+      allow read: if isDocOwner() || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin();
+    }
+
     match /products/{productId} {
       allow read: if true;
       allow write: if isAdmin();
