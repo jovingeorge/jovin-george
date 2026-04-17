@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, Clock, Phone, CheckCircle, ShoppingCart, ShieldCheck, Zap } from 'lucide-react';
+import { Calendar, Clock, Phone, CheckCircle, ShoppingCart as PayPal, ShieldCheck } from 'lucide-react';
 
 const tiers = [
   {
-    id: "consultation_basic",
     name: "Basic",
     price: "49",
     desc: "A focused 20-minute discussion on one specific health concern.",
     features: ["Clinical insight", "Educational summary", "Lifestyle tips"]
   },
   {
-    id: "consultation_advanced",
     name: "Advanced",
     price: "99",
     desc: "A comprehensive 45-minute deep-dive inclusive of lab review.",
     features: ["Detailed lab analysis", "Nutrition plan", "Herbal support guide", "Priority support"]
   },
   {
-    id: "consultation_premium",
     name: "Premium",
     price: "199",
     desc: "Long-term 90-minute therapeutic session with full health strategy.",
@@ -31,7 +28,7 @@ export default function Consultation() {
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleCheckout = () => {
+  const handlePayPal = () => {
     if (!selectedTier) return;
     const tier = tiers.find(t => t.name === selectedTier);
     if (!tier) return;
@@ -39,8 +36,7 @@ export default function Consultation() {
       state: { 
         product: { 
           name: `${tier.name} Consultation`, 
-          price: parseInt(tier.price),
-          id: tier.id
+          price: parseInt(tier.price) 
         } 
       } 
     });
@@ -117,11 +113,11 @@ export default function Consultation() {
                </button>
                <button 
                  disabled={!selectedTier}
-                 onClick={handleCheckout}
-                 className="flex items-center justify-center px-8 py-4 bg-slate-900 text-white rounded-full font-black uppercase text-xs tracking-widest hover:bg-emerald-500 transition-all shadow-xl disabled:opacity-50"
+                 onClick={handlePayPal}
+                 className="flex items-center justify-center px-8 py-4 bg-[#ffc439] text-[#003087] rounded-full font-black uppercase text-xs tracking-widest hover:brightness-95 transition-all shadow-xl disabled:opacity-50"
                >
-                 <Zap className="w-5 h-5 mr-3" />
-                 Pay with Card / Bank
+                 <PayPal className="w-5 h-5 mr-3" />
+                 Pay with PayPal
                </button>
             </div>
             

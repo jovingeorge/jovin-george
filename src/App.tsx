@@ -16,7 +16,6 @@ import Legal from './pages/Legal';
 import Account from './pages/Account';
 import Login from './pages/Login';
 import Checkout from './pages/Checkout';
-import PaymentVerify from './pages/PaymentVerify';
 import { LanguageProvider } from './context/LanguageContext';
 
 export default function App() {
@@ -36,7 +35,6 @@ export default function App() {
             <Route path="/ai-assistant" element={<AIAssistant />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/payment/verify" element={<PaymentVerify />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/legal" element={<Legal />} />

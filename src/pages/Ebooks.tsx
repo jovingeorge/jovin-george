@@ -232,14 +232,12 @@ export default function Ebooks() {
       try {
         const q = query(
           collection(db, 'orders'),
-          where('userEmail', '==', user.email),
+          where('userId', '==', user.uid),
           where('status', '==', 'verified')
         );
         const snapshot = await getDocs(q);
         const titles = snapshot.docs.map(doc => doc.data().productName);
-        const productIds = snapshot.docs.map(doc => doc.data().productId);
-        // We can check either title or ID. Using ID is safer.
-        setPurchasedBooks(productIds);
+        setPurchasedBooks(titles);
       } catch (err) {
         console.error("Error fetching purchases:", err);
       } finally {
@@ -251,12 +249,12 @@ export default function Ebooks() {
   }, []);
 
   const handleAction = (book: Ebook) => {
-    if (purchasedBooks.includes(book.id)) {
+    if (purchasedBooks.includes(book.title)) {
       // Logic for downloading with expanded content
       const content = bookContents[book.id] || `Nexus E-Book: ${book.title}\n\nJ-Nexus Clinical Content Package\n\nClinical guidelines and educational material provided by Dr. Jovin George Mabunga.`;
       downloadFile(`${book.title.replace(/\s+/g, '_')}_Nexus`, content);
     } else {
-      navigate('/checkout', { state: { product: { name: book.title, price: book.price, id: book.id } } });
+      navigate('/checkout', { state: { product: { name: book.title, price: book.price } } });
     }
   };
 
@@ -309,7 +307,7 @@ export default function Ebooks() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {ebooksList.map((book, i) => {
-            const isPurchased = purchasedBooks.includes(book.id);
+            const isPurchased = purchasedBooks.includes(book.title);
             return (
               <motion.div
                 key={book.id}
@@ -459,7 +457,7 @@ export default function Ebooks() {
                            {bookContents[selectedBookPreview.id] || "Content being synchronized with Nexus cloud databases..."}
                         </p>
                      </div>
-                     {!purchasedBooks.includes(selectedBookPreview.id) && (
+                     {!purchasedBooks.includes(selectedBookPreview.title) && (
                         <div className="mt-12 p-8 bg-white rounded-[2rem] border border-slate-100 text-center shadow-xl">
                            <p className="text-sm font-black text-slate-900 uppercase tracking-tighter mb-4 italic">Unlock the full Clinical Guide</p>
                            <button 
