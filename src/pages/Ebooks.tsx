@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Book, Download, Star, Award, BookOpen, Clock, Heart, Zap, Globe, Package, Loader2, ShieldCheck, Layers } from 'lucide-react';
+import { Book, Download, Star, Award, BookOpen, Clock, Heart, Zap, Globe, Package, Loader2, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
@@ -19,7 +19,6 @@ interface Ebook {
   rating: number;
   image: string;
   color: string;
-  pageCount: number;
   isBestseller?: boolean;
   isSpecial?: boolean;
   isPremium?: boolean;
@@ -32,12 +31,11 @@ const ebooksList: Ebook[] = [
     author: "Dr. Jovin George Mabunga",
     description: "A definitive guide to advanced cardiology, anatomical mysteries, and clinical heart care. Explore the electric rhythm of life and how to protect it.",
     descriptionSw: "Mwongozo kamili wa kadiolojia ya kisasa, mafumbo ya anatomia, na huduma ya moyo ya kliniki. Chunguza mapigo ya umeme ya maisha na jinsi ya kulinda moyo wako.",
-    chapters: ["Electrophysiology", "Ischemic Heart Disease", "Valvular Disorders", "Clinical Heart Failure", "Advanced Diagnostics", "Cardiac Surgery Post-Op", "Global Health Policy"],
+    chapters: ["Electrophysiology of the Heart", "Ischemic Heart Disease", "Valvular Disorders", "Advanced Heart Failure Management", "The Future of Cardiology"],
     price: 45,
     rating: 4.9,
     image: "https://picsum.photos/seed/heartbook/600/800",
     color: "from-rose-500 to-red-700",
-    pageCount: 524,
     isBestseller: true
   },
   {
@@ -46,12 +44,11 @@ const ebooksList: Ebook[] = [
     author: "Dr. Jovin George Mabunga",
     description: "Deep dive into the human machine. Understanding the synergy between the endocrine, digestive, and respiratory systems for total physiological balance.",
     descriptionSw: "Uchunguzi wa kina wa mashine ya binadamu. Kuelewa ushirikiano kati ya mifumo ya homoni, mmeng'enyo wa chakula, na upumuaji kwa usawa wa mwili.",
-    chapters: ["The Hormonal Symphony", "Digestive Biomechanics", "Renal filtration", "Immune Resilience", "Systemic Homeostasis", "Neurobiology", "Respiratory Physics"],
+    chapters: ["The Hormonal Symphony", "Digestive Biomechanics", "Renal filtration", "Immune Resilience", "Systemic Homeostasis"],
     price: 39,
     rating: 4.8,
     image: "https://picsum.photos/seed/systembook/600/800",
-    color: "from-emerald-500 to-teal-700",
-    pageCount: 510
+    color: "from-emerald-500 to-teal-700"
   },
   {
     id: 'herbal-nexus',
@@ -59,12 +56,11 @@ const ebooksList: Ebook[] = [
     author: "Dr. Jovin George Mabunga",
     description: "Pharmacology of the earth. Scientific validation of traditional herbal medicines and their role in modern clinical practice.",
     descriptionSw: "Famokolojia ya dunia. Uidhinishaji wa kisayansi wa dawa za asili za mitishamba na jukumu lake katika mazoezi ya kliniki ya kisasa.",
-    chapters: ["Phytochemical Foundations", "African Medicinal Treasures", "Herbal Cardiac Support", "Neurological Calm", "Sustainable Healing", "Plant Biochemistry", "Traditional Synthesis"],
+    chapters: ["Phytochemical Foundations", "African Medicinal Treasures", "Herbal Cardiac Support", "Neurological Calm via Plants", "Sustainable Healing"],
     price: 35,
     rating: 5.0,
     image: "https://picsum.photos/seed/herbalbook/600/800",
-    color: "from-amber-500 to-orange-700",
-    pageCount: 505
+    color: "from-amber-500 to-orange-700"
   },
   {
     id: 'sexual-vitality',
@@ -72,12 +68,11 @@ const ebooksList: Ebook[] = [
     author: "Dr. Jovin George Mabunga",
     description: "Bonus Program: Comprehensive educational guide to reproductive health, hormonal balance, and psychological wellness in intimacy.",
     descriptionSw: "Programu ya Ziada: Mwongozo kamili wa elimu ya afya ya uzazi, usawa wa homoni, na afya ya kisaikolojia katika uhusiano wa karibu.",
-    chapters: ["Reproductive Anatomy", "Hormonal Optimization", "Psychology of Intimacy", "Preventive Sexual Health", "Modern Relationship Dynamics", "Endocrine Balance", "Vitality Protocols"],
+    chapters: ["Reproductive Anatomy", "Hormonal Optimization", "Psychology of Intimacy", "Preventive Sexual Health", "Modern Relationship Dynamics"],
     price: 29,
     rating: 4.7,
     image: "https://picsum.photos/seed/sexualhealth/600/800",
     color: "from-purple-500 to-indigo-700",
-    pageCount: 502,
     isSpecial: true
   },
   {
@@ -86,131 +81,106 @@ const ebooksList: Ebook[] = [
     author: "Dr. Jovin George Mabunga",
     description: "Master the digital health landscape. Strategies to make medical information go viral while maintaining professional integrity.",
     descriptionSw: "Mbinu za masoko ya afya kidijitali. Mikakati ya kufanya habari za matibabu kuenea kwa kasi huku ukidumisha uadilifu wa kitaaluma.",
-    chapters: ["Psychology of Viral Content", "Digital Health Branding", "Algorithm Optimization", "Building Global Authority", "Ethics in Influence", "Content Architecture", "Global Scaling"],
+    chapters: ["Psychology of Viral Content", "Digital Health Branding", "Algorithm Optimization", "Building Global Authority", "Ethics in Health Influence"],
     price: 49,
     rating: 4.9,
     image: "https://picsum.photos/seed/marketingbook/600/800",
-    color: "from-blue-500 to-cyan-700",
-    pageCount: 515
+    color: "from-blue-500 to-cyan-700"
   },
   {
     id: 'presidential-protocol',
     title: "The Presidential Health Protocol",
     author: "Dr. Jovin George Mabunga",
-    description: "The elite roadmap to human longevity and high-capacity wellness. Originally designed for leadership under extreme stress, this protocol covers biological age reversal.",
+    description: "The elite roadmap to human longevity and high-capacity wellness. Originally designed for leadership under extreme stress, this protocol covers biological age reversal and cognitive preservation.",
     descriptionSw: "Ramani ya wasomi kwa ajili ya kuishi muda mrefu na ustawi wa hali ya juu. Iliyoundwa awali kwa viongozi chini ya msongo wa hali ya juu.",
-    chapters: ["Stress Management", "Biological Age Reversal", "Elite Nutritional Biochemistry", "Sleep Optimization", "Longevity Mindset", "Cognitive Preservation", "Bio-Hacking"],
+    chapters: ["Stress Management for Leaders", "Biological Age Reversal", "Elite Nutritional Biochemistry", "Sleep Optimization for High Capacity", "The Longevity Mindset"],
     price: 99,
     rating: 5.0,
     image: "https://picsum.photos/seed/presidential/600/800",
     color: "from-slate-700 to-slate-900",
-    pageCount: 640,
     isPremium: true
   }
 ];
 
 const bookContents: Record<string, string> = {
   'heart-silent-language': `
-[FRONT MATTER - PAGE 1-15]
 THE HEART'S SILENT LANGUAGE
-Master Clinical Volume: 524 Pages
 By Dr. Jovin George Mabunga
 Nexus Clinical Intelligence Series
 
-[INDEX & PREFACE - PAGE 16-45]
-This volume represents the definitive clinical guide to human cardiology. 
-Over 500 pages of high-resolution anatomical data and electrophysiological research.
-
-[MODULE 1: ELECTROPHYSIOLOGY - PAGE 46-120]
+MODULE 1: ELECTROPHYSIOLOGY
 The heart operates on a precise electrical grid. The SA node acts as the natural pacemaker, generating 60-100 impulses per minute. In this volume, we explore how nodal delays and ectopic foci lead to arrhythmias.
 
-[MODULE 2: ISCHEMIC PATHOLOGIES - PAGE 121-250]
+MODULE 2: ISCHEMIC PATHOLOGIES
 Understanding atherosclerosis. How plaque buildup restricts coronary flow and the biomechanics of a myocardial infarction.
 
-[MODULE 3-7: ADVANCED CLINICS - PAGE 251-524]
-Comprehensive surgical pathways, valvular biomechanics, and global heart health policy.
+MODULE 3: PREVENTIVE PROTOCOL
+Cardioprotective nutrition and the role of VO2 max in predicting longevity.
   `,
   'internal-alchemy': `
-[FRONT MATTER - PAGE 1-10]
 INTERNAL ALCHEMY: THE HUMAN MACHINE
-Master Clinical Volume: 510 Pages
 By Dr. Jovin George Mabunga
 
-[INDEX & PREFACE - PAGE 11-40]
-Deep dive into the synergy of body systems. 
-
-[MODULE 1: THE ENDOCRINE SYMPHONY - PAGE 41-150]
+MODULE 1: THE ENDOCRINE SYMPHONY
 Cortisol vs. Melatonin: The circadian balance. How modern blue light exposure disrupts the adrenal cortex and insulin sensitivity.
 
-[MODULE 2: RENAL BIOMECHANICS - PAGE 151-300]
-The kidney is not just a filter; it's a blood pressure regulator.
+MODULE 2: RENAL BIOMECHANICS
+The kidney is not just a filter; it's a blood pressure regulator. Understanding the RAAS system (Renin-Angiotensin-Aldosterone System).
 
-[MODULE 3-7: SYSTEMIC SYNERGY - PAGE 301-510]
-Neurobiology, Respiratory Physics, and Immune Resilience protocols.
+MODULE 3: DIGESTIVE ALCHEMY
+The gut-brain axis and the role of the microbiome in systemic inflammation.
   `,
   'herbal-nexus': `
-[FRONT MATTER - PAGE 1-12]
 THE HERBAL NEXUS: PHARMACOLOGY OF THE EARTH
-Master Clinical Volume: 505 Pages
 Scientific validations by Dr. Jovin George Mabunga
 
-[PHARMACOLOGICAL FOUNDATIONS - PAGE 13-100]
+CHAPTER 1: THE PHYTOCHEMICAL FOUNDATION
 Plants produce alkaloids, flavonoids, and terpenes for defense. These same compounds act as antioxidants in the human cytoplasm.
 
-[AFRICAN MEDICINAL TREASURES - PAGE 101-250]
-Exploring 'Mwarobaini' (Neem) and its efficacy against malaria. Scientific breakdown of 'Mlonge' (Moringa).
+CHAPTER 2: AFRICAN MEDICINAL TREASURES
+Exploring 'Mwarobaini' (Neem) and its efficacy against malaria and skin disorders. Scientific breakdown of 'Mlonge' (Moringa) as a super-nutrient catalyst.
 
-[ADVANCED PHYTO-THERAPY - PAGE 251-505]
-The chemistry of healing across diverse biomes.
+CHAPTER 3: CARDIAC HERBAL SUPPORT
+Hawthorn berry and Hibiscus sabdariffa in the management of stage 1 hypertension.
   `,
   'sexual-vitality': `
-[FRONT MATTER - PAGE 1-15]
 SEXUAL VITALITY & EDUCATION
-Special Bonus Program: 502 Pages
-By Dr. Jovin George Mabunga
+Special Bonus Program by Dr. Jovin George Mabunga
 
-[REPRODUCTIVE BIOMECHANICS - PAGE 16-120]
-Hormonal optimization and reproductive anatomy.
+CHAPTER 1: HORMONAL OPTIMIZATION
+Testosterone and Estrogen balance beyond reproduction. The role of Zinc (Zn) and Magnesium (Mg) in reproductive health.
 
-[PSYCHOLOGY OF INTIMACY - PAGE 121-300]
-Stress response, Cortisol impact, and psychological wellness.
+CHAPTER 2: PREVENTIVE SEXUAL HEALTH
+Understanding modern diagnostics for STI/STDs and the importance of early screening for cervical and prostate health.
 
-[PREVENTIVE PROTOCOLS - PAGE 301-502]
-Modern STI diagnostics and hormonal balance preservation.
+CHAPTER 3: PSYCHOLOGICAL WELLNESS
+How stress (cortisol) acts as a vaso-constrictor, impacting intimacy and libido.
   `,
   'viral-marketing': `
-[FRONT MATTER - PAGE 1-10]
 VIRAL HEALTH MARKETING
-Master Volume: 515 Pages
-By Dr. Jovin George Mabunga
+By Dr. Jovin George Mabunga (Nexus Medical Director)
 
-[CONTENT ARCHITECTURE - PAGE 11-150]
-The Attention Economy. How to build medical authority in the digital age.
+CHAPTER 1: THE ATTENTION ECONOMY
+In the digital age, attention is a currency. How doctors can use hook-point architecture to deliver life-saving information.
 
-[ALGORITHM OPTIMIZATION - PAGE 151-350]
-SEO for healthcare and global scaling strategies.
+CHAPTER 2: ALGORITHM OPTIMIZATION
+SEO for healthcare. Ranking for 'Heart Care Tanzania' and building a brand of authority.
 
-[ETHICAL VIRALITY - PAGE 351-515]
-Maintaining clinical integrity while mastering social dynamics.
+CHAPTER 3: ETHICAL VIRALITY
+Maintaining clinical integrity while mastering the dopamine loops of social media.
   `,
   'presidential-protocol': `
-[FRONT MATTER - PAGE 1-25]
 THE PRESIDENTIAL HEALTH PROTOCOL: ELITE LONGEVITY
-Elite Master Volume: 640 Pages
 By Dr. Jovin George Mabunga
 
-[STRESS MANAGEMENT FOR LEADERS - PAGE 26-150]
+CHAPTER 1: STRESS BIOMECHANICS FOR LEADERS
 The HPA axis under pressure. Strategies for high-stakes decision makers to avoid burnout.
 
-[BIOLOGICAL AGE REVERSAL - PAGE 151-400]
-The science of Telomeres. Fasting and hyperbaric oxygen protocols.
+CHAPTER 2: BIOLOGICAL AGE REVERSAL
+The science of Telomeres. How fasting and hyperbaric oxygen protocols impact cellular aging.
 
-[ELITE BIO-HACKING - PAGE 401-640]
-Nutritional Biochemistry and Cognitive Preservation techniques.
-
-[NEXUS CERTIFICATION]
-This 640-page master volume is part of the Nexus Elite Clinical Series.
-Verified for High-Capacity Wellness Architecture.
+CHAPTER 3: ELITE NUTRITION
+The Presidential Diet: Focus on Mitochondrial efficiency and ATP production.
   `
 };
 
@@ -351,10 +321,6 @@ export default function Ebooks() {
                         <BookOpen className="w-3 h-3" />
                         {language === 'en' ? 'Read Sample' : 'Soma Sehemu'}
                      </button>
-                     <div className="text-[9px] font-black uppercase tracking-widest text-slate-300 flex items-center gap-1.5 border-l border-slate-100 pl-4">
-                        <Layers className="w-3 h-3 text-secondary" />
-                        {book.pageCount} Pages
-                     </div>
                   </div>
 
                   <div className="space-y-3 mb-10">

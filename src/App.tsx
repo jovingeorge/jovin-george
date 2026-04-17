@@ -10,9 +10,6 @@ import AIAssistant from './pages/AIAssistant';
 import DiseaseDB from './pages/DiseaseDB';
 import Ebooks from './pages/Ebooks';
 import GlobalCare from './pages/GlobalCare';
-import FAQ from './pages/FAQ';
-import Contact from './pages/Contact';
-import Legal from './pages/Legal';
 import Account from './pages/Account';
 import Login from './pages/Login';
 import Checkout from './pages/Checkout';
@@ -35,9 +32,6 @@ export default function App() {
             <Route path="/ai-assistant" element={<AIAssistant />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/legal" element={<Legal />} />
             <Route path="/account" element={<Account />} />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<Navigate to="/" replace />} />

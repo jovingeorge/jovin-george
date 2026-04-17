@@ -9,104 +9,12 @@ import { motion } from 'motion/react';
 import { downloadFile } from '../lib/download';
 
 const bookContents: Record<string, string> = {
-  "The Heart's Silent Language": `
-[FRONT MATTER - PAGE 1-15]
-THE HEART'S SILENT LANGUAGE
-Master Clinical Volume: 524 Pages
-By Dr. Jovin George Mabunga
-Nexus Clinical Intelligence Series
-
-[INDEX & PREFACE - PAGE 16-45]
-This volume represents the definitive clinical guide to human cardiology. 
-Over 500 pages of high-resolution anatomical data and electrophysiological research.
-
-[MODULE 1: ELECTROPHYSIOLOGY - PAGE 46-120]
-The heart operates on a precise electrical grid. The SA node acts as the natural pacemaker, generating 60-100 impulses per minute. In this volume, we explore how nodal delays and ectopic foci lead to arrhythmias.
-
-[MODULE 2: ISCHEMIC PATHOLOGIES - PAGE 121-250]
-Understanding atherosclerosis. How plaque buildup restricts coronary flow and the biomechanics of a myocardial infarction.
-
-[MODULE 3-7: ADVANCED CLINICS - PAGE 251-524]
-Comprehensive surgical pathways, valvular biomechanics, and global heart health policy.
-  `,
-  "Internal Alchemy: Body Systems": `
-[FRONT MATTER - PAGE 1-10]
-INTERNAL ALCHEMY: THE HUMAN MACHINE
-Master Clinical Volume: 510 Pages
-By Dr. Jovin George Mabunga
-
-[INDEX & PREFACE - PAGE 11-40]
-Deep dive into the synergy of body systems. 
-
-[MODULE 1: THE ENDOCRINE SYMPHONY - PAGE 41-150]
-Cortisol vs. Melatonin: The circadian balance. How modern blue light exposure disrupts the adrenal cortex and insulin sensitivity.
-
-[MODULE 2: RENAL BIOMECHANICS - PAGE 151-300]
-The kidney is not just a filter; it's a blood pressure regulator.
-
-[MODULE 3-7: SYSTEMIC SYNERGY - PAGE 301-510]
-Neurobiology, Respiratory Physics, and Immune Resilience protocols.
-  `,
-  "The Herbal Nexus": `
-[FRONT MATTER - PAGE 1-12]
-THE HERBAL NEXUS: PHARMACOLOGY OF THE EARTH
-Master Clinical Volume: 505 Pages
-Scientific validations by Dr. Jovin George Mabunga
-
-[PHARMACOLOGICAL FOUNDATIONS - PAGE 13-100]
-Plants produce alkaloids, flavonoids, and terpenes for defense. These same compounds act as antioxidants in the human cytoplasm.
-
-[AFRICAN MEDICINAL TREASURES - PAGE 101-250]
-Exploring 'Mwarobaini' (Neem) and its efficacy against malaria. Scientific breakdown of 'Mlonge' (Moringa).
-
-[ADVANCED PHYTO-THERAPY - PAGE 251-505]
-The chemistry of healing across diverse biomes.
-  `,
-  "Sexual Vitality & Education": `
-[FRONT MATTER - PAGE 1-15]
-SEXUAL VITALITY & EDUCATION
-Special Bonus Program: 502 Pages
-By Dr. Jovin George Mabunga
-
-[REPRODUCTIVE BIOMECHANICS - PAGE 16-120]
-Hormonal optimization and reproductive anatomy.
-
-[PSYCHOLOGY OF INTIMACY - PAGE 121-300]
-Stress response, Cortisol impact, and psychological wellness.
-
-[PREVENTIVE PROTOCOLS - PAGE 301-502]
-Modern STI diagnostics and hormonal balance preservation.
-  `,
-  "Viral Health Marketing": `
-[FRONT MATTER - PAGE 1-10]
-VIRAL HEALTH MARKETING
-Master Volume: 515 Pages
-By Dr. Jovin George Mabunga
-
-[CONTENT ARCHITECTURE - PAGE 11-150]
-The Attention Economy. How to build medical authority in the digital age.
-
-[ALGORITHM OPTIMIZATION - PAGE 151-350]
-SEO for healthcare and global scaling strategies.
-
-[ETHICAL VIRALITY - PAGE 351-515]
-Maintaining clinical integrity while mastering social dynamics.
-  `,
-  "The Presidential Health Protocol": `
-[FRONT MATTER - PAGE 1-25]
-THE PRESIDENTIAL HEALTH PROTOCOL: ELITE LONGEVITY
-Elite Master Volume: 640 Pages
-By Dr. Jovin George Mabunga
-
-[STRESS MANAGEMENT FOR LEADERS - PAGE 26-150]
-The HPA axis under pressure. Strategies for high-stakes decision makers to avoid burnout.
-
-[BIOLOGICAL AGE REVERSAL - PAGE 151-400]
-The science of Telomeres. Fasting and hyperbaric oxygen protocols.
-
-[ELITE BIO-HACKING - PAGE 401-640]
-Nutritional Biochemistry and Cognitive Preservation techniques.
-  `
+  "The Heart's Silent Language": "THE HEART'S SILENT LANGUAGE\n\nMODULE 1: ELECTROPHYSIOLOGY\n\nPREVENTIVE PROTOCOL\n\nFull edition by Dr. Jovin George Mabunga.",
+  "Internal Alchemy: Body Systems": "INTERNAL ALCHEMY\n\nMODULE 1: THE ENDOCRINE SYMPHONY\n\nFull edition by Dr. Jovin George Mabunga.",
+  "The Herbal Nexus": "THE HERBAL NEXUS\n\nCHAPTER 1: PHYTOCHEMICAL FOUNDATIONS\n\nFull edition by Dr. Jovin George Mabunga.",
+  "Sexual Vitality & Education": "SEXUAL VITALITY\n\nCHAPTER 1: HORMONAL OPTIMIZATION\n\nFull edition by Dr. Jovin George Mabunga.",
+  "Viral Health Marketing": "VIRAL HEALTH MARKETING\n\nCHAPTER 1: THE ATTENTION ECONOMY\n\nFull edition by Dr. Jovin George Mabunga.",
+  "The Presidential Health Protocol": "THE PRESIDENTIAL HEALTH PROTOCOL\n\nCHAPTER 1: ELITE LONGEVITY\n\nFull edition by Dr. Jovin George Mabunga."
 };
 
 export default function Account() {

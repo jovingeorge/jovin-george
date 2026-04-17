@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, ShieldAlert, Thermometer, Pill, Hospital, ChevronRight, Heart, Activity, AlertCircle, Globe, Droplets, Database, Info, Layers, Bookmark } from 'lucide-react';
+import { Search, ShieldAlert, Thermometer, Pill, Hospital, ChevronRight, Heart, Activity, AlertCircle, Globe, Droplets, Database, Info, Layers } from 'lucide-react';
 import Logo from '../components/Logo';
 
 interface Disease {
@@ -265,13 +265,6 @@ export default function DiseaseDB() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedDisease, setSelectedDisease] = useState<Disease | null>(diseaseData[0]);
-  const [bookmarks, setBookmarks] = useState<string[]>([]);
-
-  const toggleBookmark = (id: string) => {
-    setBookmarks(prev => 
-      prev.includes(id) ? prev.filter(b => b !== id) : [...prev, id]
-    );
-  };
 
   const filtered = diseaseData.filter(d => {
     const matchesSearch = d.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -405,13 +398,6 @@ export default function DiseaseDB() {
                            </span>
                            <span className="w-1 h-1 bg-slate-200 rounded-full" />
                            <span className="text-[10px] font-black text-primary uppercase tracking-widest">{selectedDisease.category} Case</span>
-                           
-                           <button 
-                             onClick={() => toggleBookmark(selectedDisease.id)}
-                             className={`ml-4 p-3 rounded-xl transition-all border ${bookmarks.includes(selectedDisease.id) ? 'bg-secondary border-secondary text-slate-900 shadow-xl shadow-secondary/20' : 'bg-white border-slate-100 text-slate-400 hover:border-secondary hover:text-secondary'}`}
-                           >
-                              <Bookmark className={`w-5 h-5 ${bookmarks.includes(selectedDisease.id) ? 'fill-current' : ''}`} />
-                           </button>
                         </div>
                       </div>
                    </div>

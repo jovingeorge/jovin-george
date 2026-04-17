@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { CreditCard, ShieldCheck, Lock, ChevronLeft, CheckCircle2, HeartPulse, Building2, User, Loader2, AlertCircle, ShoppingCart, Zap } from 'lucide-react';
+import { CreditCard, ShieldCheck, Lock, ChevronLeft, CheckCircle2, HeartPulse, Building2, User, Loader2, AlertCircle, ShoppingCart } from 'lucide-react';
 import { db, auth } from '../lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
@@ -16,6 +16,9 @@ export default function Checkout() {
   const product = location.state?.product || { name: "Digital Health Guide", price: 45 };
   
   const [step, setStep] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const handleOrderCapture = async (orderId: string) => {
     setIsProcessing(true);
     try {
@@ -38,20 +41,6 @@ export default function Checkout() {
     } finally {
       setIsProcessing(false);
     }
-  };
-
-  const [paymentMethod, setPaymentMethod] = useState<'PayPal' | 'Card'>('PayPal');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [cardData, setCardData] = useState({ number: '', expiry: '', cvc: '', name: '' });
-
-  const handleManualPayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
-    // Simulate high-capacity clinical transaction processing
-    setTimeout(async () => {
-      await handleOrderCapture("CC-VISA-MASTERCARD-" + Math.random().toString(36).substr(2, 9).toUpperCase());
-    }, 2000);
   };
 
   if (step === 3) {
@@ -105,128 +94,54 @@ export default function Checkout() {
                 </div>
               </div>
 
-              {/* Payment Switcher */}
-              <div className="flex bg-slate-50 rounded-2xl p-1 mb-10 border border-slate-100">
-                 <button 
-                   onClick={() => setPaymentMethod('PayPal')}
-                   className={`flex-1 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${paymentMethod === 'PayPal' ? 'bg-white text-slate-900 shadow-md' : 'text-slate-400'}`}
-                 >
-                    PayPal / Sandbox
-                 </button>
-                 <button 
-                   onClick={() => setPaymentMethod('Card')}
-                   className={`flex-1 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${paymentMethod === 'Card' ? 'bg-white text-slate-900 shadow-md' : 'text-slate-400'}`}
-                 >
-                    Visa / MasterCard
-                 </button>
-              </div>
-
               <div className="space-y-10">
                 <div className="bg-slate-50 p-8 rounded-[2rem] border border-slate-100 italic font-bold text-slate-600 text-sm leading-relaxed">
                   "Nexus transactions are processed via bank-grade encryption using PayPal's global infrastructure for J-Nexus Clinical Works."
                 </div>
 
-                {paymentMethod === 'PayPal' ? (
-                  <div className="paypal-container relative z-10">
-                     {isProcessing && (
-                        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-[2rem]">
-                           <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-                           <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Verifying Transaction...</p>
-                        </div>
-                     )}
-                     
-                     <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID }}>
-                        <PayPalButtons 
-                           style={{ 
-                              layout: "vertical",
-                              shape: "pill",
-                              label: "pay",
-                              height: 55
-                           }}
-                           createOrder={(data, actions) => {
-                              return actions.order.create({
-                                 intent: "CAPTURE",
-                                 purchase_units: [
-                                    {
-                                       amount: {
-                                          value: product.price.toString(),
-                                          currency_code: "USD"
-                                       },
-                                       description: product.name
-                                    }
-                                 ]
-                              });
-                           }}
-                           onApprove={async (data, actions) => {
-                              if (actions.order) {
-                                 const details = await actions.order.capture();
-                                 await handleOrderCapture((details as any).id || "PP-CAP-SUCCESS");
-                              }
-                           }}
-                           onError={(err) => {
-                              console.error("PayPal Error:", err);
-                              setError("There was an error with your PayPal transaction. Please try again.");
-                           }}
-                        />
-                     </PayPalScriptProvider>
-                  </div>
-                ) : (
-                  <form onSubmit={handleManualPayment} className="space-y-8">
-                     <div className="space-y-4">
-                        <div className="relative">
-                           <CreditCard className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5" />
-                           <input 
-                              required
-                              type="text" 
-                              placeholder="CARD NUMBER"
-                              className="w-full bg-slate-50 border-none rounded-2xl py-6 px-16 text-slate-900 font-black tracking-widest placeholder:text-slate-300 focus:ring-2 focus:ring-secondary transition-all"
-                              value={cardData.number}
-                              onChange={(e) => setCardData({...cardData, number: e.target.value.replace(/\D/g, '').substr(0, 16)})}
-                           />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                           <input 
-                              required
-                              type="text" 
-                              placeholder="MM / YY"
-                              className="w-full bg-slate-50 border-none rounded-2xl py-6 px-8 text-slate-900 font-black tracking-widest placeholder:text-slate-300 focus:ring-2 focus:ring-secondary transition-all"
-                           />
-                           <input 
-                              required
-                              type="text" 
-                              placeholder="CVC"
-                              className="w-full bg-slate-50 border-none rounded-2xl py-6 px-8 text-slate-900 font-black tracking-widest placeholder:text-slate-300 focus:ring-2 focus:ring-secondary transition-all"
-                           />
-                        </div>
-                        <input 
-                           required
-                           type="text" 
-                           placeholder="CARDHOLDER NAME"
-                           className="w-full bg-slate-50 border-none rounded-2xl py-6 px-8 text-slate-900 font-black tracking-widest placeholder:text-slate-300 focus:ring-2 focus:ring-secondary transition-all uppercase"
-                        />
-                     </div>
-
-                     <button 
-                        disabled={isProcessing}
-                        type="submit"
-                        className="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black uppercase text-xs tracking-[0.2em] shadow-2xl hover:bg-secondary transition-all flex items-center justify-center gap-4 group"
-                     >
-                        {isProcessing ? (
-                           <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                           <>
-                              Process Transaction via Card
-                              <Zap className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                           </>
-                        )}
-                     </button>
-                     
-                     <div className="flex items-center justify-center gap-4 opacity-40 grayscale group-hover:grayscale-0 transition-all">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg" alt="Visa" className="h-4" />
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-6" />
-                     </div>
-                  </form>
-                )}
+                <div className="paypal-container relative z-10">
+                   {isProcessing && (
+                      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-[2rem]">
+                         <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
+                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Verifying Transaction...</p>
+                      </div>
+                   )}
+                   
+                   <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID }}>
+                      <PayPalButtons 
+                         style={{ 
+                            layout: "vertical",
+                            shape: "pill",
+                            label: "pay",
+                            height: 55
+                         }}
+                         createOrder={(data, actions) => {
+                            return actions.order.create({
+                               intent: "CAPTURE",
+                               purchase_units: [
+                                  {
+                                     amount: {
+                                        value: product.price.toString(),
+                                        currency_code: "USD"
+                                     },
+                                     description: product.name
+                                  }
+                               ]
+                            });
+                         }}
+                         onApprove={async (data, actions) => {
+                            if (actions.order) {
+                               const details = await actions.order.capture();
+                               await handleOrderCapture((details as any).id || "PP-CAP-SUCCESS");
+                            }
+                         }}
+                         onError={(err) => {
+                            console.error("PayPal Error:", err);
+                            setError("There was an error with your PayPal transaction. Please try again.");
+                         }}
+                      />
+                   </PayPalScriptProvider>
+                </div>
 
                 {error && (
                   <div className="mt-4 p-6 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-4 text-rose-600 text-[10px] font-black uppercase tracking-widest leading-relaxed">

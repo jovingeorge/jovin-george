@@ -37,63 +37,43 @@ const ebooks = [
 const partnerProducts = [
   {
     id: "az1",
-    name: "3M Littmann Cardiology IV Stethoscope",
-    price: 198.50,
-    category: "Cardiology Gear",
-    image: "https://picsum.photos/seed/littmann/600/800",
-    desc: "The gold standard for clinicians. Outstanding acoustic performance with better audibility of high-frequency sounds.",
-    link: "https://www.amazon.com/3M-Littmann-Cardiology-Stethoscope-Bordeaux/dp/B018786F30",
+    name: "Digital Professional Stethoscope",
+    price: 189.99,
+    category: "Medical Gear",
+    image: "https://picsum.photos/seed/steth/600/800",
+    desc: "Cure-focused high precision diagnostic tool for cardiology professionals.",
+    link: "https://amazon.com/stethoscope",
     store: "Amazon"
   },
   {
     id: "az2",
-    name: "Omron Platinum Blood Pressure Monitor",
-    price: 79.99,
-    category: "Home Diagnostics",
-    image: "https://picsum.photos/seed/omron/600/800",
-    desc: "Validated for accuracy. Stores 200 readings for two users. Syncs via Bluetooth to the Omron Connect app.",
-    link: "https://www.amazon.com/Omron-Platinum-Pressure-Monitor-Readings/dp/B07S2S3C7S",
-    store: "Amazon"
-  },
-  {
-    id: "az3",
-    name: "Philips HeartStart Home AED Defibrillator",
-    price: 1275.00,
+    name: "Portable AED Defibrillator",
+    price: 1250.00,
     category: "Emergency Gear",
-    image: "https://picsum.photos/seed/defib/600/800",
-    desc: "Designed for use by anyone in a cardiac emergency. Clear voice instructions guide you through every step.",
-    link: "https://www.amazon.com/Philips-HeartStart-Home-AED-Defibrillator/dp/B00064CEDW",
+    image: "https://picsum.photos/seed/aed/600/800",
+    desc: "Hospital-grade portable life-saving device for heart failure emergencies.",
+    link: "https://amazon.com/aed",
     store: "Amazon"
   },
   {
-    id: "az4",
-    name: "KardiaMobile 6L Personal EKG",
-    price: 149.00,
-    category: "Mobile Health",
-    image: "https://picsum.photos/seed/kardia/600/800",
-    desc: "The world's first 6-lead personal EKG. Detect AFib, Bradycardia, and Tachycardia in just 30 seconds.",
-    link: "https://www.amazon.com/KardiaMobile-6L-Personal-EKG-Device/dp/B07RQW6SD5",
-    store: "Amazon"
+    id: "eb1",
+    name: "Home ECG Wellness Monitor",
+    price: 89.00,
+    category: "Diagnostics",
+    image: "https://picsum.photos/seed/ecg/600/800",
+    desc: "Mobile heart rhythm tracking for proactive cardiovascular health.",
+    link: "https://ebay.com/ecg-monitor",
+    store: "eBay"
   },
   {
-    id: "az5",
-    name: "Withings Body Scan Smart Scale",
-    price: 399.95,
-    category: "Body Systems",
-    image: "https://picsum.photos/seed/scale/600/800",
-    desc: "Advanced body composition analyzer with segmental muscle mass, vascular age, and 6-lead ECG measurements.",
-    link: "https://www.amazon.com/Withings-Body-Scan-Composition-Nerve/dp/B0B5VX8Z4J",
-    store: "Amazon"
-  },
-  {
-    id: "az6",
-    name: "Welch Allyn Professional Otoscope",
-    price: 245.00,
-    category: "Clinical Basics",
-    image: "https://picsum.photos/seed/oto/600/800",
-    desc: "Professional diagnostics for ENT evaluations. High-intensity LED fiber optic lighting for clear visuals.",
-    link: "https://www.amazon.com/Welch-Allyn-Diagnostic-Otoscope-Handle/dp/B001IKZ2G2",
-    store: "Amazon"
+    id: "cn1",
+    name: "Infrared Clinical Thermometer",
+    price: 34.50,
+    category: "Basics",
+    image: "https://picsum.photos/seed/therm/600/800",
+    desc: "Rapid contactless temperature measurement for global pandemic screening.",
+    link: "https://aliexpress.com/thermometer",
+    store: "Global Store"
   }
 ];
 
